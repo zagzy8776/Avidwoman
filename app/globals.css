@@ -1,0 +1,181 @@
+/* ------------------------------------------------------------------
+   Global stylesheet — theme entry point.
+
+   The BRAND PALETTE lives in exactly one place: the :root block of
+   ./avid-styles.css (imported below). This file intentionally declares
+   NO colour of its own — it only MAPS those brand primitives onto the
+   shadcn/ui design tokens (--background, --primary, --card, --border, …).
+
+   Result: the storefront (which reads the brand variables directly) and
+   the /admin console (which reads the shadcn tokens) share one source of
+   colour truth. Change a hex in avid-styles.css and both update.
+------------------------------------------------------------------ */
+@import 'tailwindcss';
+@import '../components/avid-styles.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Brand type -> Tailwind's default font + the font-sans / font-serif
+     utilities. Without this, Tailwind's preflight keeps its own stack
+     (--font-sans: -apple-system, "Segoe UI", Roboto …) and
+     --default-font-family never resolves to Manrope — which is why form
+     controls (swatches, size buttons, inputs) drifted to a system font
+     while the editorial type looked correct. */
+  --font-sans: var(--sans);
+  --font-serif: var(--serif);
+
+  /* Brand palette exposed to /admin as Tailwind utilities
+     (bg-gold, text-ivory, border-hairline, text-brand-muted, …) */
+  --color-ink: var(--black);
+  --color-charcoal: var(--charcoal);
+  --color-charcoal-2: var(--charcoal-2);
+  --color-gold: var(--gold);
+  --color-soft-gold: var(--soft-gold);
+  --color-ivory: var(--ivory);
+  --color-brand-muted: var(--brand-muted);
+  --color-danger: var(--danger);
+  --color-hairline: var(--line);
+  --color-hairline-gold: var(--line-gold);
+  --color-cream: var(--cream);
+  --color-cream-2: var(--cream-2);
+  --color-terracotta: var(--terracotta);
+  --color-rust-red: var(--rust-red);
+  --color-earth-brown: var(--earth-brown);
+  --color-earth-brown-2: var(--earth-brown-2);
+
+  /* shadcn/ui tokens */
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ------------------------------------------------------------------
+   Brand palette  ->  shadcn/ui tokens.
+   Values are never written here; they are resolved from avid-styles.css.
+   The house is dark-only, so :root and .dark resolve identically.
+------------------------------------------------------------------ */
+:root,
+.dark {
+  color-scheme: dark;
+
+  /* surfaces */
+  --background: var(--black);
+  --foreground: var(--ivory);
+  --card: var(--charcoal);
+  --card-foreground: var(--ivory);
+  --popover: var(--charcoal);
+  --popover-foreground: var(--ivory);
+
+  /* actions */
+  --primary: var(--gold);
+  --primary-foreground: var(--black);
+  --secondary: var(--charcoal-2);
+  --secondary-foreground: var(--ivory);
+  --muted: var(--charcoal-2);
+  --muted-foreground: var(--brand-muted);
+  --accent: var(--gold);
+  --accent-foreground: var(--black);
+  --destructive: var(--danger);
+
+  /* lines & focus */
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--gold);
+
+  /* data viz */
+  --chart-1: var(--gold);
+  --chart-2: var(--soft-gold);
+  --chart-3: var(--ivory);
+  --chart-4: var(--brand-muted);
+  --chart-5: var(--charcoal-2);
+
+  --radius: 0.625rem;
+
+  /* admin shell */
+  --sidebar: var(--charcoal);
+  --sidebar-foreground: var(--ivory);
+  --sidebar-primary: var(--gold);
+  --sidebar-primary-foreground: var(--black);
+  --sidebar-accent: var(--charcoal-2);
+  --sidebar-accent-foreground: var(--ivory);
+  --sidebar-border: var(--line);
+  --sidebar-ring: var(--gold);
+}
+
+/* ------------------------------------------------------------------
+   Heritage mode — scoped accent layer.
+
+   Wrap any section in data-theme="heritage" to swap the surface and
+   accents for the Igbo / Yoruba textile palette. Only tokens change —
+   components are untouched — mirroring the .dark pattern above. The
+   storefront band and any admin preview both resolve through this.
+------------------------------------------------------------------ */
+[data-theme="heritage"] {
+  color-scheme: dark;
+
+  --background: var(--charcoal);
+  --foreground: var(--ivory);
+  --card: var(--charcoal);
+  --card-foreground: var(--ivory);
+  --popover: var(--charcoal);
+  --popover-foreground: var(--ivory);
+
+  --primary: var(--terracotta);
+  --primary-foreground: var(--cream);
+  --secondary: var(--earth-brown);
+  --secondary-foreground: var(--cream);
+  --muted: var(--earth-brown);
+  --muted-foreground: var(--cream);
+  --accent: var(--terracotta);
+  --accent-foreground: var(--cream);
+  --destructive: var(--danger);
+
+  --border: var(--line-brown);
+  --input: var(--line-brown);
+  --ring: var(--terracotta);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
