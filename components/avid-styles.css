@@ -5246,6 +5246,7 @@ a.gold-button {
   font-size: clamp(26px, 2.6vw, 38px);
   font-weight: 400;
   line-height: 1.1;
+}
 
 /* ==================================================================
    CONTACT PAGE + STUDIO PANEL
@@ -5455,6 +5456,43 @@ a.gold-button {
     grid-template-columns: 1fr;
     gap: 46px;
     padding: 56px 6vw 100px;
+  }
+
+  .contact-map {
+    position: static;
+  }
+
+  .contact-map-frame {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media (max-width: 520px) {
+  .contact-list li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .contact-list a,
+  .contact-list button {
+    font-size: 15px;
+    text-align: left;
+  }
+
+  .fitting-studio {
+    padding: 24px 20px;
+  }
+
+  .fitting-studio-actions {
+    flex-direction: column;
+  }
+
+  .fitting-studio-actions .gold-button,
+  .fitting-studio-actions .outline-button {
+    width: 100%;
+  }
+}
 
 /* --- Login: password field with a show/hide toggle -------------------
    A long password typed blind is the usual cause of "invalid login
@@ -5480,6 +5518,10 @@ a.gold-button {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   transform: translateY(-50%);
+}
+
+.password-toggle:hover {
+  opacity: 0.7;
 }
 
 /* ==================================================================
@@ -5678,7 +5720,7 @@ a.gold-button {
   color: var(--gold);
 }
 
-/* Light theme: the shared surfaces already flip, so only the two panels
+/* Light theme: the shared surfaces already flip, so only the three panels
    that hardcode a dark ground need a hand. */
 [data-theme="light"] .location-note,
 [data-theme="light"] .location-facts > div,
@@ -5715,51 +5757,6 @@ a.gold-button {
   .location-region ul {
     grid-template-columns: 1fr;
   }
-}
-
-
-.password-toggle:hover {
-  opacity: 0.7;
-}
-
-  }
-
-  .contact-map {
-    position: static;
-  }
-
-  .contact-map-frame {
-    aspect-ratio: 4 / 3;
-  }
-}
-
-@media (max-width: 520px) {
-  .contact-list li {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .contact-list a,
-  .contact-list button {
-    font-size: 15px;
-    text-align: left;
-  }
-
-  .fitting-studio {
-    padding: 24px 20px;
-  }
-
-  .fitting-studio-actions {
-    flex-direction: column;
-  }
-
-  .fitting-studio-actions .gold-button,
-  .fitting-studio-actions .outline-button {
-    width: 100%;
-  }
-}
-
 }
 
 .checkout-fields {
