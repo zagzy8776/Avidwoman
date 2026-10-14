@@ -2,42 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
     <url>
-      <loc>https://avidwomanvogue.com</loc>
+      <loc>https://avidwoman.vercel.app</loc>
       <lastmod>2026-10-14</lastmod>
       <changeFrequency>weekly</changeFrequency>
       <priority>1.0</priority>
     </url>
   
     <url>
-      <loc>https://avidwomanvogue.com/shop</loc>
+      <loc>https://avidwoman.vercel.app/shop</loc>
       <lastmod>2026-10-14</lastmod>
       <changeFrequency>daily</changeFrequency>
       <priority>0.9</priority>
     </url>
   
     <url>
-      <loc>https://avidwomanvogue.com/thrift</loc>
+      <loc>https://avidwoman.vercel.app/thrift</loc>
       <lastmod>2026-10-14</lastmod>
       <changeFrequency>daily</changeFrequency>
       <priority>0.9</priority>
     </url>
   
     <url>
-      <loc>https://avidwomanvogue.com/fitting</loc>
+      <loc>https://avidwoman.vercel.app/fitting</loc>
       <lastmod>2026-10-14</lastmod>
       <changeFrequency>monthly</changeFrequency>
       <priority>0.8</priority>
     </url>
   
     <url>
-      <loc>https://avidwomanvogue.com/about</loc>
+      <loc>https://avidwoman.vercel.app/about</loc>
       <lastmod>2026-10-14</lastmod>
       <changeFrequency>monthly</changeFrequency>
       <priority>0.8</priority>
     </url>
   
     <url>
-      <loc>https://avidwomanvogue.com/contact</loc>
+      <loc>https://avidwoman.vercel.app/contact</loc>
       <lastmod>2026-10-14</lastmod>
       <changeFrequency>monthly</changeFrequency>
       <priority>0.8</priority>
