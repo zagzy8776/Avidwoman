@@ -7,7 +7,7 @@
 export const FABRICS = ['Ankara', 'Adire', 'Aso-Oke', 'Lace', 'Silk', 'Other'] as const
 export type Fabric = (typeof FABRICS)[number]
 
-export const COLLECTIONS = ['SIGNATURE 01', 'EVENING', 'HERITAGE', 'ESSENTIALS', 'COUTURE'] as const
+export const COLLECTIONS = ['SIGNATURE 01', 'EVENING', 'HERITAGE', 'THRIFT', 'ESSENTIALS', 'COUTURE'] as const
 export type Collection = string
 
 export const SIZES = ['XS', 'S', 'M', 'L', 'XL'] as const

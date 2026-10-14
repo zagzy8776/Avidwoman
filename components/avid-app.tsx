@@ -26,7 +26,7 @@ type SocialLinks = {
   tiktok: string | null;
 };
 
-type View = "home" | "shop" | "product" | "about" | "fitting" | "checkout";
+type View = "home" | "shop" | "product" | "about" | "fitting" | "contact" | "checkout";
 
 /**
  * How long the atelier takes to confirm a transfer — used on the cart, the
@@ -36,6 +36,32 @@ type View = "home" | "shop" | "product" | "about" | "fitting" | "checkout";
  * fitting form; confirm the payment window with her.
  */
 const PAYMENT_WINDOW = "one working day";
+
+/**
+ * The house's own contact points — the addresses that never change and must
+ * work even before Supabase settings are filled in.
+ *
+ * TODO(address): the map links search for the business by name in Owerri.
+ * Replace `mapQuery` with her exact street address once she confirms it, and
+ * every "Get directions" button on the site follows automatically.
+ */
+const HOUSE = {
+  instagram: "https://www.instagram.com/avidwoman",
+  tiktok: "https://www.tiktok.com/@avidwoman",
+  whatsapp: "https://wa.me/2347063243954",
+  phoneDisplay: "0706 324 3954",
+  phoneDial: "+2347063243954",
+  /** What the map searches for. Swap in the street address when she gives it. */
+  mapQuery: "Avid Woman Vogue, Owerri, Imo State, Nigeria",
+  /** Opens the shop in Google Maps — customers tap once and get directions. */
+  get directions() {
+    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(this.mapQuery)}`;
+  },
+  /** The shop pin on its own, for the embedded map panel. */
+  get mapEmbed() {
+    return `https://www.google.com/maps?q=${encodeURIComponent(this.mapQuery)}&output=embed`;
+  },
+};
 
 type CartItem = {
   key: string;
@@ -1111,6 +1137,8 @@ export default function App({
   contactEmail,
   bankDetails,
   content = CONTENT_DEFAULTS,
+  initialView = "home",
+  initialCollection,
 }: {
   products?: Product[];
   lookbook?: LookbookFrame[];
@@ -1125,6 +1153,18 @@ export default function App({
    * text it always has.
    */
   content?: Partial<Record<ContentKey, Partial<ContentBlock>>>;
+  /**
+   * Which view opens on load. The thin routes in app/shop, app/about,
+   * app/fitting and app/contact pass their own value so each of those is a real,
+   * linkable, indexable URL rather than a client-side state a crawler cannot
+   * reach. Defaults to the home page.
+   */
+  initialView?: View;
+  /**
+   * A collection to open the shop on, so /thrift lands on the pre-loved pieces
+   * instead of the whole catalogue.
+   */
+  initialCollection?: string;
 }) {
   /** One block, resolved against the shipped defaults. */
   const block = (key: ContentKey): ContentBlock => ({
@@ -1153,7 +1193,7 @@ export default function App({
       );
     });
 
-  const [view, setView] = useState<View>("home");
+  const [view, setView] = useState<View>(initialView);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
@@ -1178,7 +1218,7 @@ export default function App({
   const [wishlist, setWishlist] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState("M");
-  const [shopFilter, setShopFilter] = useState("All");
+  const [shopFilter, setShopFilter] = useState(initialCollection ?? "All");
   const [sort, setSort] = useState("Featured");
 
   /** Gallery for the current product/colour: variant images, else the product shot. */
@@ -1442,9 +1482,10 @@ export default function App({
                 on any page other than home). */}
             <nav className="desktop-nav" aria-label="Primary navigation">
               <button className={view === "shop" ? "active" : ""} onClick={() => goShop()}>Shop</button>
+              <button className={view === "shop" ? "active" : ""} onClick={() => goShop({ collection: "THRIFT" })}>Thrift</button>
               <button onClick={() => scrollToSection("collections")}>Collections</button>
-              <button className={view === "home" ? "active" : ""} onClick={() => scrollToSection("gallery")}>Gallery</button>
               <button className={view === "about" ? "active" : ""} onClick={() => navigate("about")}>About</button>
+              <button className={view === "contact" ? "active" : ""} onClick={() => navigate("contact")}>Contact</button>
             </nav>
             <div className="header-actions">
               <button className="header-cta desktop-action" onClick={() => navigate("fitting")}>Book a fitting</button>
@@ -1470,10 +1511,11 @@ export default function App({
             <button className="menu-close" onClick={() => setMenuOpen(false)} aria-label="Close menu"><Icon name="close" /></button>
             <p className="eyebrow">Menu</p>
             <button onClick={() => goShop()}><small>01</small>Shop</button>
-            <button onClick={() => scrollToSection("collections")}><small>02</small>Collections</button>
-            <button onClick={() => scrollToSection("gallery")}><small>03</small>Gallery</button>
+            <button onClick={() => goShop({ collection: "THRIFT" })}><small>02</small>Thrift store</button>
+            <button onClick={() => scrollToSection("collections")}><small>03</small>Collections</button>
             <button onClick={() => navigate("about")}><small>04</small>About</button>
-            <button onClick={() => navigate("fitting")}><small>05</small>Book a fitting</button>
+            <button onClick={() => navigate("fitting")}><small>05</small>Book an appointment</button>
+            <button onClick={() => navigate("contact")}><small>06</small>Contact</button>
             <div className="menu-extra">
               <button onClick={() => goShop({ saved: true })}>Saved pieces{wishlist.size > 0 ? ` (${wishlist.size})` : ""}</button>
               <button onClick={toggleTheme}>
@@ -1675,14 +1717,20 @@ export default function App({
       {view === "shop" && (
         <main className="page-main">
           <section className="page-hero">
-            <p className="eyebrow">SHOP ALL</p>
-            <h1>The full collection.</h1>
+            <p className="eyebrow">THE COLLECTION</p>
+            <h1>Shop AVID WOMAN VOGUE.</h1>
             <p className="page-hero-note">
-              Every piece is cut and finished by hand. Not sure of your size?{" "}
-              <button className="inline-link" onClick={() => navigate("fitting")}>Book a fitting</button> and we will
-              measure you before your order is cut.
+              Every piece is cut and sewn by hand in our Owerri studio, in small numbers, and
+              checked before it is packed. Not sure of your size?{" "}
+              <button className="inline-link" onClick={() => navigate("fitting")}>
+                Book a fitting
+              </button>{" "}
+              and we will measure you before your order is cut.
             </p>
-            <p>{filteredProducts.length} of {products.length} pieces · Handmade in Lagos</p>
+            <p>
+              {filteredProducts.length} of {products.length} pieces available · Handmade in Owerri,
+              Imo State
+            </p>
           </section>
           <section className="shop-layout">
             <aside className="filters">
@@ -2116,59 +2164,218 @@ export default function App({
       {view === "fitting" && (
         <main className="page-main fitting-page">
           <section className="page-hero">
-            <p className="eyebrow">APPOINTMENTS &amp; FITTINGS</p>
-            <h1>Book your<br /><em>appointment.</em></h1>
+            <p className="eyebrow">PRIVATE APPOINTMENTS</p>
+            <h1>Book an appointment<br /><em>at the studio.</em></h1>
             <p className="page-hero-note">
-              We confirm every appointment within one working day. You can also reach us directly
-              on{" "}
-              <a className="inline-link" href="https://wa.me/2347063243954" target="_blank" rel="noopener noreferrer">
-                WhatsApp
-              </a>
-              {" "}if you prefer to chat first.
+              Meet us at our Owerri studio to be measured, fitted and advised in person — or send
+              your measurements from anywhere in Nigeria and we will handle the rest.
             </p>
-            <p>{FITTING_SERVICES.length} services available · personal appointments</p>
+            <p>
+              Confirmed within one working day · {FITTING_SERVICES.length} services · Owerri, Imo
+              State
+            </p>
           </section>
+
           <section className="fitting-layout">
             <div className="fitting-copy">
-              <p className="eyebrow">WHAT TO EXPECT</p>
-              <h2>Simple process. Just tell us what you need.</h2>
+              <p className="eyebrow">HOW IT WORKS</p>
+              <h2>A private appointment, from first message to final fitting.</h2>
               <ol className="fitting-steps">
-                <li><b>01</b><span>Fill the form or send us a WhatsApp message — tell us the service, a day that works for you, and anything we should know.</span></li>
-                <li><b>02</b><span>We reply within one working day with two or three available times to choose from.</span></li>
-                <li><b>03</b><span>Come in for your appointment. If you are not in Lagos, send your measurements and we handle the rest by courier.</span></li>
+                <li>
+                  <b>01</b>
+                  <span>
+                    Request a time using the form, or message us on WhatsApp. Tell us which service
+                    you need and a day that suits you.
+                  </span>
+                </li>
+                <li>
+                  <b>02</b>
+                  <span>
+                    We reply within one working day with two or three available slots so you can
+                    choose what works.
+                  </span>
+                </li>
+                <li>
+                  <b>03</b>
+                  <span>
+                    Come to the studio for your appointment. Outside Imo State? Send your
+                    measurements and the finished piece is couriered to you.
+                  </span>
+                </li>
               </ol>
+
+              <p className="eyebrow">SERVICES</p>
               <ul className="fitting-services">
                 <li>
                   <b>Fitting for a new piece</b>
-                  <span>45 mins · free with every order</span>
+                  <span>45 minutes · complimentary with every order</span>
                 </li>
                 <li>
                   <b>Adjustments &amp; re-sizing</b>
-                  <span>Quoted before we start</span>
+                  <span>For pieces you already own · quoted before we begin</span>
                 </li>
                 <li>
                   <b>Made to measure</b>
-                  <span>Two visits: measurements then final check</span>
+                  <span>Two appointments: measurement, then final fitting</span>
                 </li>
                 <li>
                   <b>Send my measurements</b>
-                  <span>Not in Lagos? Send them and we handle the rest by courier</span>
+                  <span>For clients outside Imo State · guidance sent by WhatsApp</span>
                 </li>
               </ul>
+
+              <p className="eyebrow">THE STUDIO</p>
+              <div className="fitting-studio">
+                <p className="fitting-studio-address">
+                  AVID WOMAN VOGUE
+                  <span>Owerri, Imo State, Nigeria</span>
+                </p>
+                <p className="fitting-studio-hours">
+                  Monday to Saturday · 9:00am – 6:00pm
+                  <span>Closed Sundays and public holidays</span>
+                </p>
+                <div className="fitting-studio-actions">
+                  <a className="gold-button" href={HOUSE.directions} target="_blank" rel="noopener noreferrer">
+                    Get directions <span>↗</span>
+                  </a>
+                  <a className="outline-button" href={`tel:${HOUSE.phoneDial}`}>
+                    Call {HOUSE.phoneDisplay}
+                  </a>
+                </div>
+                <a className="fitting-whatsapp" href={HOUSE.whatsapp} target="_blank" rel="noopener noreferrer">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.849L0 24l6.304-1.508A11.944 11.944 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.005-1.37l-.36-.213-3.727.891.92-3.63-.234-.373A9.818 9.818 0 0 1 2.182 12c0-5.422 4.396-9.818 9.818-9.818s9.818 4.396 9.818 9.818-4.396 9.818-9.818 9.818z" />
+                  </svg>
+                  Prefer to message? Chat on WhatsApp
+                </a>
+              </div>
+            </div>
+
+            <FittingForm contactEmail={contactEmail} />
+          </section>
+        </main>
+      )}
+
+      {view === "contact" && (
+        <main className="page-main contact-page">
+          <section className="page-hero">
+            <p className="eyebrow">CONTACT</p>
+            <h1>Visit the studio<br /><em>or send a message.</em></h1>
+            <p className="page-hero-note">
+              We are in Owerri, Imo State, and we deliver anywhere in Nigeria. Call, message or
+              email us — and if you are nearby, tap the map and it will bring you straight to the
+              door.
+            </p>
+          </section>
+
+          <section className="contact-layout">
+            <div className="contact-details">
+              <div className="contact-block">
+                <p className="eyebrow">THE STUDIO</p>
+                <p className="contact-line">
+                  AVID WOMAN VOGUE
+                  <span>Owerri, Imo State, Nigeria</span>
+                </p>
+                <p className="contact-line">
+                  Monday to Saturday · 9:00am – 6:00pm
+                  <span>Closed Sundays and public holidays</span>
+                </p>
+                <a className="gold-button contact-directions" href={HOUSE.directions} target="_blank" rel="noopener noreferrer">
+                  Get directions to the shop <span>↗</span>
+                </a>
+              </div>
+
+              <div className="contact-block">
+                <p className="eyebrow">TALK TO US</p>
+                <ul className="contact-list">
+                  <li>
+                    <span>WhatsApp</span>
+                    <a href={HOUSE.whatsapp} target="_blank" rel="noopener noreferrer">
+                      {HOUSE.phoneDisplay} ↗
+                    </a>
+                  </li>
+                  <li>
+                    <span>Phone</span>
+                    <a href={`tel:${HOUSE.phoneDial}`}>{HOUSE.phoneDisplay}</a>
+                  </li>
+                  {contactEmail && (
+                    <li>
+                      <span>Email</span>
+                      <a href={houseMailto("Message for the studio", "Hello,", contactEmail)}>
+                        {contactEmail}
+                      </a>
+                    </li>
+                  )}
+                  <li>
+                    <span>Instagram</span>
+                    <a href={HOUSE.instagram} target="_blank" rel="noopener noreferrer">
+                      @avidwoman ↗
+                    </a>
+                  </li>
+                  <li>
+                    <span>TikTok</span>
+                    <a href={HOUSE.tiktok} target="_blank" rel="noopener noreferrer">
+                      @avidwoman ↗
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="contact-block">
+                <p className="eyebrow">ORDERS &amp; ENQUIRIES</p>
+                <ul className="contact-list contact-list-links">
+                  <li>
+                    <span>Fittings</span>
+                    <button onClick={() => navigate("fitting")}>Book an appointment</button>
+                  </li>
+                  <li>
+                    <span>Trade &amp; bulk</span>
+                    <a href={houseMailto("Trade & bulk order enquiry", "Hello,\n\nI would like to ask about a trade or bulk order.\n", contactEmail)}>
+                      Request trade prices
+                    </a>
+                  </li>
+                  <li>
+                    <span>Thrift store</span>
+                    <button onClick={() => goShop()}>Shop pre-loved pieces</button>
+                  </li>
+                  <li>
+                    <span>Press</span>
+                    <a href={houseMailto("Press enquiry", "Hello,\n\nI would like to ask about press and samples.\n", contactEmail)}>
+                      Press &amp; samples
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* The map panel. Tapping anywhere on it opens Google Maps with the
+                shop as the destination, so a customer gets turn-by-turn
+                directions in one tap rather than copying an address. */}
+            <aside className="contact-map">
               <a
-                className="fitting-whatsapp"
-                href="https://wa.me/2347063243954"
+                className="contact-map-frame"
+                href={HOUSE.directions}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Open directions to the AVID WOMAN VOGUE studio in Google Maps"
               >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-                  <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.849L0 24l6.304-1.508A11.944 11.944 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.005-1.37l-.36-.213-3.727.891.92-3.63-.234-.373A9.818 9.818 0 0 1 2.182 12c0-5.422 4.396-9.818 9.818-9.818s9.818 4.396 9.818 9.818-4.396 9.818-9.818 9.818z" />
-                </svg>
-                Or chat with us on WhatsApp · 07063243954
+                <iframe
+                  src={HOUSE.mapEmbed}
+                  title="Map showing the AVID WOMAN VOGUE studio in Owerri, Imo State"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  tabIndex={-1}
+                />
+                <span className="contact-map-cta">
+                  Tap for directions <i>↗</i>
+                </span>
               </a>
-            </div>
-            <FittingForm contactEmail={contactEmail} />
+              <p className="contact-map-note">
+                Owerri, Imo State · We also serve Port Harcourt, Aba, Umuahia, Aba and clients
+                across Nigeria by courier.
+              </p>
+            </aside>
           </section>
         </main>
       )}
@@ -2194,7 +2401,14 @@ export default function App({
         />
       )}
 
-      <Footer navigate={navigate} social={social} contactEmail={contactEmail} onSizeGuide={() => setSizeGuideOpen(true)} about={block("footer.about")} />
+      <Footer
+        navigate={navigate}
+        social={social}
+        contactEmail={contactEmail}
+        onSizeGuide={() => setSizeGuideOpen(true)}
+        onShopCollection={(collection) => goShop({ collection })}
+        about={block("footer.about")}
+      />
 
       <div className={`drawer-backdrop ${cartOpen ? "is-open" : ""}`} onClick={() => setCartOpen(false)} />
       <aside className={`cart-drawer ${cartOpen ? "is-open" : ""}`}>
@@ -2402,12 +2616,15 @@ function Footer({
   social,
   contactEmail,
   onSizeGuide,
+  onShopCollection,
   about,
 }: {
   navigate: (view: View) => void;
   social?: SocialLinks;
   contactEmail?: string | null;
   onSizeGuide: () => void;
+  /** Opens the shop filtered to one collection (e.g. THRIFT) from the footer. */
+  onShopCollection: (collection: string) => void;
   /** The owner's house line (Admin → Content → Page copy). */
   about: ContentBlock;
 }) {
@@ -2450,25 +2667,25 @@ function Footer({
           <div>
             <p>Shop</p>
             <button onClick={() => navigate("shop")}>Shop all</button>
+            <button onClick={() => onShopCollection("THRIFT")}>Thrift store</button>
             <button onClick={() => navigate("about")}>Our story</button>
-            <button onClick={() => navigate("fitting")}>Fittings &amp; appointments</button>
           </div>
           <div>
-            <p>Help</p>
-            <a href={houseMailto("Delivery & returns", "Hello, I have a question about delivery and returns.", contactEmail)}>
-              Delivery &amp; returns
-            </a>
-            <button onClick={onSizeGuide}>Size guide</button>
-            <a href={houseMailto("Question for the studio", "Hello,", contactEmail)}>Contact us</a>
-          </div>
-          <div>
-            <p>Appointments</p>
+            <p>Client care</p>
+            <button onClick={() => navigate("contact")}>Contact us</button>
             <button onClick={() => navigate("fitting")}>Book an appointment</button>
-            <a href={houseMailto("Trade enquiry", "Hello, I would like to ask about a trade or bulk order.", contactEmail)}>
+            <button onClick={onSizeGuide}>Size guide</button>
+          </div>
+          <div>
+            <p>Trade</p>
+            <a href={houseMailto("Trade & bulk order enquiry", "Hello,\n\nI would like to ask about a trade or bulk order.\n", contactEmail)}>
               Trade &amp; bulk orders
             </a>
-            <a href={houseMailto("Press enquiry", "Hello, I would like to ask about press and samples.", contactEmail)}>
-              Press
+            <a href={houseMailto("Press enquiry", "Hello,\n\nI would like to ask about press and samples.\n", contactEmail)}>
+              Press &amp; samples
+            </a>
+            <a href={houseMailto("Delivery & returns", "Hello,\n\nI have a question about delivery and returns.\n", contactEmail)}>
+              Delivery &amp; returns
             </a>
           </div>
           {socialLinks.length > 0 && (
@@ -2487,8 +2704,9 @@ function Footer({
           {socialLinks.length === 0 && (
             <div>
               <p>Follow us</p>
-              <a href="https://www.instagram.com/avidwoman" target="_blank" rel="noopener noreferrer">Instagram</a>
-              <a href="https://wa.me/2347063243954" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+              <a href={HOUSE.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
+              <a href={HOUSE.tiktok} target="_blank" rel="noopener noreferrer">TikTok</a>
+              <a href={HOUSE.whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp</a>
             </div>
           )}
         </div>
@@ -2497,7 +2715,10 @@ function Footer({
       <div className="footer-bottom">
         <span>© 2026 AVID WOMAN VOGUE</span>
         <span>All rights reserved</span>
-        <Link href="/admin">Admin portal</Link>
+        {/* The admin console is deliberately NOT linked from here. Staff reach it
+            by typing /admin directly; a customer browsing the footer never sees
+            a door into the back office. */}
+        <span>Lagos · Owerri · Port Harcourt</span>
       </div>
     </footer>
   );

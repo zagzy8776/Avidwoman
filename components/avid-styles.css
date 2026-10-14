@@ -1218,7 +1218,9 @@ h2 em {
   display: grid;
   margin: 0;
   gap: 34px;
-  grid-template-columns: repeat(3, 1fr);
+  /* Four columns now: Shop, Client care, Trade, Follow us. auto-fit keeps them
+     even and wraps gracefully if a column is added or a translation runs long. */
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
 }
 
 .footer-links > div {
@@ -5244,6 +5246,253 @@ a.gold-button {
   font-size: clamp(26px, 2.6vw, 38px);
   font-weight: 400;
   line-height: 1.1;
+
+/* ==================================================================
+   CONTACT PAGE + STUDIO PANEL
+
+   The contact view pairs the studio's details with a live map. The map is
+   wrapped in an <a> so tapping the map itself opens Google Maps with the shop
+   as the destination — one tap to directions, no address to copy.
+   ================================================================== */
+
+.contact-layout {
+  display: grid;
+  gap: 5vw;
+  grid-template-columns: 1fr 0.9fr;
+  align-items: start;
+  padding: 80px 6vw 140px;
+}
+
+.contact-details {
+  display: grid;
+  gap: 42px;
+}
+
+.contact-block {
+  padding-bottom: 34px;
+  border-bottom: 1px solid var(--line);
+}
+
+.contact-block:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.contact-block .eyebrow {
+  margin: 0 0 18px;
+}
+
+.contact-line {
+  margin: 0 0 16px;
+  font-family: var(--serif);
+  font-size: clamp(20px, 1.8vw, 26px);
+  line-height: 1.35;
+}
+
+.contact-line span {
+  display: block;
+  margin-top: 6px;
+  color: var(--brand-muted);
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.contact-directions {
+  width: auto;
+  margin-top: 10px;
+  padding: 0 34px;
+}
+
+.contact-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.contact-list li:last-child {
+  border-bottom: 0;
+}
+
+.contact-list span {
+  color: var(--brand-muted);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.contact-list a,
+.contact-list button {
+  padding: 0;
+  color: var(--gold);
+  font-family: var(--serif);
+  font-size: 17px;
+  text-align: right;
+  text-decoration: none;
+  transition: opacity 0.25s ease;
+}
+
+.contact-list a:hover,
+.contact-list button:hover {
+  opacity: 0.7;
+}
+
+/* --- The map panel --- */
+.contact-map {
+  position: sticky;
+  top: 120px;
+}
+
+.contact-map-frame {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  border: 1px solid var(--line-gold);
+  background: var(--charcoal-2);
+  text-decoration: none;
+}
+
+.contact-map-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  /* The iframe is decorative; the surrounding <a> owns the click so a tap
+     anywhere on the map opens directions. */
+  pointer-events: none;
+  filter: grayscale(0.35) contrast(1.05);
+  transition: filter 0.4s ease, transform 0.5s ease;
+}
+
+.contact-map-frame:hover iframe {
+  filter: grayscale(0) contrast(1);
+  transform: scale(1.02);
+}
+
+.contact-map-cta {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  color: #1a1612;
+  background: var(--gold);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: transform 0.25s ease;
+}
+
+.contact-map-frame:hover .contact-map-cta {
+  transform: translateY(-3px);
+}
+
+.contact-map-cta i {
+  font-style: normal;
+}
+
+.contact-map-note {
+  margin: 18px 0 0;
+  color: var(--brand-muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+/* --- The studio block on the appointment page --- */
+.fitting-studio {
+  display: grid;
+  gap: 22px;
+  margin-top: 18px;
+  padding: 30px 28px;
+  border: 1px solid var(--line-gold);
+}
+
+.fitting-studio-address,
+.fitting-studio-hours {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.4;
+}
+
+.fitting-studio-address span,
+.fitting-studio-hours span {
+  display: block;
+  margin-top: 6px;
+  color: var(--brand-muted);
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.fitting-studio-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.fitting-studio-actions .gold-button,
+.fitting-studio-actions .outline-button {
+  width: auto;
+  padding: 0 26px;
+}
+
+@media (max-width: 980px) {
+  .contact-layout {
+    grid-template-columns: 1fr;
+    gap: 46px;
+    padding: 56px 6vw 100px;
+  }
+
+  .contact-map {
+    position: static;
+  }
+
+  .contact-map-frame {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media (max-width: 520px) {
+  .contact-list li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .contact-list a,
+  .contact-list button {
+    font-size: 15px;
+    text-align: left;
+  }
+
+  .fitting-studio {
+    padding: 24px 20px;
+  }
+
+  .fitting-studio-actions {
+    flex-direction: column;
+  }
+
+  .fitting-studio-actions .gold-button,
+  .fitting-studio-actions .outline-button {
+    width: 100%;
+  }
+}
+
 }
 
 .checkout-fields {
