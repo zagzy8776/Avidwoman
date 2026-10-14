@@ -136,7 +136,7 @@ export default async function AdminOrdersPage({
               {order.note ? <small className="order-meta is-note">“{order.note}”</small> : null}
             </span>
             <span>
-              {order.product ?? '—'}
+              {order.product ?? 'None'}
               {/* Colour, size and quantity per line: without them she cannot
                   pick the right piece off the rail. The name is prefixed only
                   when there is more than one line. */}

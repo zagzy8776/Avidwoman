@@ -69,7 +69,7 @@ export async function POST(request: Request) {
 
   const incoming = Array.isArray(body.items) ? body.items : []
   if (incoming.length === 0) {
-    return bad('Your bag is empty — nothing to order yet.')
+    return bad('Your bag is empty, so there is nothing to order yet.')
   }
 
   const settings = await getSettings()
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
     // confirmation screen reads sensibly. This is NOT a total anyone is
     // charged: the real path below re-resolves every price from the catalogue.
     const stubSubtotal = Number(body.subtotal) || 0
-    console.log('[checkout] stub — Supabase is not configured, so this order was only logged:', {
+    console.log('[checkout] stub: Supabase is not configured, so this order was only logged:', {
       reference,
       customer,
       items: incoming,
@@ -111,7 +111,7 @@ export async function POST(request: Request) {
     products = await listProducts()
   } catch (error) {
     console.error('[checkout] could not read the catalogue', error)
-    return bad('We could not reach the atelier just now. Your bag is safe — please try again.', 503)
+    return bad('We could not reach the studio just now. Your bag is safe, please try again.', 503)
   }
 
   const items: OrderItem[] = []
@@ -122,7 +122,7 @@ export async function POST(request: Request) {
 
     // Wholesale / bulk pieces are an enquiry, not a checkout order.
     if (product.inquiryOnly) {
-      return bad(`${product.name} is ordered by enquiry — email the atelier and we will quote you.`)
+      return bad(`${product.name} is ordered by enquiry. Email the studio and we will quote you.`)
     }
 
     const variantId = line.variantId === null || line.variantId === undefined ? null : Number(line.variantId)
@@ -133,7 +133,7 @@ export async function POST(request: Request) {
 
     const size = String(line.size ?? '').trim()
     const offered = variant?.sizes.length ? variant.sizes : ['XS', 'S', 'M', 'L', 'XL']
-    if (!offered.includes(size)) return bad(`Size ${size || '—'} is not offered in that colour.`)
+    if (!offered.includes(size)) return bad(`Size ${size || 'that'} is not offered in that colour.`)
 
     const qty = Math.max(1, Math.min(99, Math.floor(Number(line.qty) || 1)))
     items.push({

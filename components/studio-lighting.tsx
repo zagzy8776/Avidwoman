@@ -44,8 +44,8 @@ const BEAMS: Beam[] = [
 
 type Mote = {
   beam: number;
-  t: number;        // 0–1 position along the beam
-  lateral: number;  // -1–1 position across the beam width
+  t: number;        // 0 to 1, position along the beam
+  lateral: number;  // -1 to 1, position across the beam width
   drift: number;    // fraction of the beam traversed per ms
   radius: number;
   phase: number;

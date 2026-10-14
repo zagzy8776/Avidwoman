@@ -257,11 +257,11 @@ function productFacts(product: Product, colorName: string, sizes: string[]) {
     },
     {
       title: "Styling & beauty notes",
-      body: "Styling: keep the line long — a fine gold chain, one ring and a low heel let the cut speak. Beauty: skin with a little warmth, a bare eye, and either a deep berry or a clear gloss on the lip. Nails short and square.",
+      body: "Styling: keep the line long. A fine gold chain, one ring and a low heel let the cut speak. Beauty: skin with a little warmth, a bare eye, and either a deep berry or a clear gloss on the lip. Nails short and square.",
     },
     {
       title: "Delivery & returns",
-      body: "Made and dispatched from our Owerri studio within five working days, with complimentary delivery. If the fit is not right, return it unworn within 14 days — or book a free adjustment and keep the piece.",
+      body: "Made and dispatched from our Owerri studio within five working days, with complimentary delivery. If the fit is not right, return it unworn within 14 days, or book a free adjustment and keep the piece.",
     },
   ];
 }
@@ -365,14 +365,14 @@ function ProductCard({
           {variants.map((variant) => {
             const pendingPhoto = !hasPhotography(variant);
             const label = pendingPhoto
-              ? `${variant.colorName} — photograph available on request`
+              ? `${variant.colorName}, photograph available on request`
               : `See ${product.name} in ${variant.colorName}`;
             return (
               <button
                 key={variant.id}
                 className={`colour-chip ${hovered?.id === variant.id ? "is-active" : ""} ${pendingPhoto ? "is-pending" : ""}`}
                 style={{ background: variant.colorHex }}
-                title={pendingPhoto ? label : `${variant.colorName} — tap to see it`}
+                title={pendingPhoto ? label : `${variant.colorName}, tap to see it`}
                 aria-label={label}
                 disabled={pendingPhoto}
                 onMouseEnter={() => pendingPhoto || setHovered(variant)}
@@ -420,7 +420,7 @@ function VariantSelector({
     <div className="variant-selector" role="radiogroup" aria-label="Select colour">
       <div className="selector-head">
         <span>
-          Colour — <em>{selected?.colorName ?? variants[0]?.colorName}</em>
+          Colour · <em>{selected?.colorName ?? variants[0]?.colorName}</em>
         </span>
       </div>
       <div className="variant-swatches">
@@ -437,7 +437,7 @@ function VariantSelector({
               disabled={soldOut || pendingPhoto}
               className={`variant-swatch ${active ? "is-active" : ""} ${soldOut ? "is-soldout" : ""} ${pendingPhoto ? "is-pending" : ""}`}
               onClick={() => onSelect(variant)}
-              title={`${variant.colorName}${state ? ` — ${state}` : ""}`}
+              title={`${variant.colorName}${state ? `, ${state}` : ""}`}
             >
               <i style={{ background: variant.colorHex }} aria-hidden="true" />
               <span>{variant.colorName}</span>
@@ -526,7 +526,7 @@ const SAMPLE_REVIEWS: { rating: number; author: string; date: string; body: stri
     rating: 4,
     author: "Ruth M.",
     date: "2025-08-19",
-    body: "The cloth is heavier than it looks on screen — a good thing. It does crease slightly at the waist after a full day of sitting.",
+    body: "The cloth is heavier than it looks on screen, which is a good thing. It does crease slightly at the waist after a full day of sitting.",
   },
   {
     rating: 5,
@@ -596,11 +596,11 @@ function relatedTo(products: Product[], active: Product, take = 3): Product[] {
 
 /** The measurements the atelier cuts to, so a shopper can size herself. */
 const SIZE_GUIDE = [
-  { size: "XS", bust: "80–84 cm / 31–33 in", waist: "62–66 cm / 24–26 in", hip: "88–92 cm / 35–36 in" },
-  { size: "S", bust: "85–89 cm / 33–35 in", waist: "67–71 cm / 26–28 in", hip: "93–97 cm / 37–38 in" },
-  { size: "M", bust: "90–94 cm / 35–37 in", waist: "72–76 cm / 28–30 in", hip: "98–102 cm / 39–40 in" },
-  { size: "L", bust: "95–100 cm / 37–39 in", waist: "77–82 cm / 30–32 in", hip: "103–108 cm / 41–43 in" },
-  { size: "XL", bust: "101–107 cm / 40–42 in", waist: "83–89 cm / 33–35 in", hip: "109–115 cm / 43–45 in" },
+  { size: "XS", bust: "80 to 84 cm / 31 to 33 in", waist: "62 to 66 cm / 24 to 26 in", hip: "88 to 92 cm / 35 to 36 in" },
+  { size: "S", bust: "85 to 89 cm / 33 to 35 in", waist: "67 to 71 cm / 26 to 28 in", hip: "93 to 97 cm / 37 to 38 in" },
+  { size: "M", bust: "90 to 94 cm / 35 to 37 in", waist: "72 to 76 cm / 28 to 30 in", hip: "98 to 102 cm / 39 to 40 in" },
+  { size: "L", bust: "95 to 100 cm / 37 to 39 in", waist: "77 to 82 cm / 30 to 32 in", hip: "103 to 108 cm / 41 to 43 in" },
+  { size: "XL", bust: "101 to 107 cm / 40 to 42 in", waist: "83 to 89 cm / 33 to 35 in", hip: "109 to 115 cm / 43 to 45 in" },
 ];
 
 /**
@@ -687,7 +687,7 @@ function FittingForm({ contactEmail }: { contactEmail?: string | null }) {
       </div>
       <label className="fitting-field">
         <span>Anything we should know?</span>
-        <textarea name="notes" rows={4} placeholder="The dress you ordered, your usual size, what needs adjusting — anything helps." />
+        <textarea name="notes" rows={4} placeholder="The dress you ordered, your usual size, what needs adjusting. Anything helps." />
       </label>
       <button className="gold-button" type="submit" disabled={state.status === "sending"}>
         {state.status === "sending" ? "Sending your request…" : "Send appointment request ↗"}
@@ -742,7 +742,7 @@ function BankDetailsBlock({ bank }: { bank: BankDetails }) {
         </button>
         <small role="status" aria-live="polite">
           {copyState === "manual"
-            ? "Copying is blocked in this browser — press and hold to select the number."
+            ? "Copying is blocked in this browser. Press and hold to select the number."
             : ""}
         </small>
       </div>
@@ -850,7 +850,7 @@ function CheckoutView({
       const payload = (await response.json()) as Partial<PlacedOrder> & { ok?: boolean; message?: string };
       if (!response.ok || !payload.ok || !payload.reference) {
         setStatus("idle");
-        setMessage(payload.message ?? "That did not go through. Your bag is safe — please try again.");
+        setMessage(payload.message ?? "That did not go through. Your bag is safe, please try again.");
         return;
       }
       onPlaced({
@@ -862,14 +862,14 @@ function CheckoutView({
         bankDetails: payload.bankDetails ?? bank ?? null,
         stub: Boolean(payload.stub),
         lines: cart.map((item) => ({
-          label: `${item.product.name} — ${item.variant?.colorName ?? "house colour"}, size ${item.size} ×${item.qty}`,
+          label: `${item.product.name}, ${item.variant?.colorName ?? "house colour"}, size ${item.size} ×${item.qty}`,
           amount: unitPrice(item.product, item.variant) * item.qty,
         })),
       });
     } catch {
       setStatus("idle");
       setMessage(
-        "We could not reach the studio just now. Your bag is safe — try again, or send it by email.",
+        "We could not reach the studio just now. Your bag is safe, so try again or send it by email.",
       );
     }
   }
@@ -899,7 +899,7 @@ function CheckoutView({
               <h2 className="confirmation-reference">{placed.reference}</h2>
             </div>
             <p className="checkout-lead">
-              Quote this number as your transfer reference. Keep it — it is all you need to complete
+              Quote this number as your transfer reference. Keep it. It is all you need to complete
               the payment, even if you close this page.
             </p>
 
@@ -955,12 +955,12 @@ function CheckoutView({
               <a
                 className="gold-button"
                 href={houseMailto(
-                  `Transfer receipt — ${placed.reference}`,
+                  `Transfer receipt for ${placed.reference}`,
                   [
                     `Hello, I have sent the transfer for order ${placed.reference}.`,
                     "",
                     "What I ordered:",
-                    ...placed.lines.map((line) => `• ${line.label} — ${money(line.amount, currency)}`),
+                    ...placed.lines.map((line) => `• ${line.label}: ${money(line.amount, currency)}`),
                     "",
                     `Total: ${money(placed.total, currency)}`,
                     "",
@@ -1001,7 +1001,7 @@ function CheckoutView({
         <div className="checkout-main">
           <section className="checkout-block" aria-labelledby="checkout-details">
             <div className="checkout-block-head">
-              <p className="eyebrow">01 — YOUR DETAILS</p>
+              <p className="eyebrow">01 · YOUR DETAILS</p>
               <h2 id="checkout-details">Delivery details</h2>
             </div>
             <div className="checkout-fields">
@@ -1045,7 +1045,7 @@ function CheckoutView({
 
           <section className="checkout-block" aria-labelledby="checkout-payment">
             <div className="checkout-block-head">
-              <p className="eyebrow">02 — PAYMENT</p>
+              <p className="eyebrow">02 · PAYMENT</p>
               <h2 id="checkout-payment">Pay by bank transfer</h2>
             </div>
             {readyToPay && bank ? (
@@ -1806,7 +1806,7 @@ export default function App({
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') goShop(); }}
-                  aria-label={`View lookbook frame ${frame.number} — tap to shop`}
+                  aria-label={`View lookbook frame ${frame.number}, tap to shop`}
                 >
                   <img src={frame.image} alt={frame.alt} loading="lazy" />
                   <figcaption><span>{frame.number}</span><i /></figcaption>
@@ -1868,7 +1868,7 @@ export default function App({
               </a>
             </div>
             <ul className="fitting-band-list reveal">
-              <li><b>01</b><span>We check the fit on you — free with every order</span></li>
+              <li><b>01</b><span>We check the fit on you, free with every order</span></li>
               <li><b>02</b><span>Adjustments and re-sizing, quoted before we start</span></li>
               <li><b>03</b><span>Made to your measurements, not a generic size chart</span></li>
             </ul>
@@ -2025,8 +2025,8 @@ export default function App({
                     {savedOnly
                       ? "Tap the heart on a piece to keep it here."
                       : shopFilter !== "All"
-                        ? "New pieces are added in small runs, so check back shortly — or browse everything we have ready now."
-                        : "Try another size, or contact us — most pieces can be cut to your measurements."}
+                        ? "New pieces are added in small runs, so check back shortly, or browse everything we have ready now."
+                        : "Try another size, or contact us. Most pieces can be cut to your measurements."}
                   </span>
                   <button className="outline-button" onClick={() => goShop()}>Show everything</button>
                 </div>
@@ -2090,7 +2090,7 @@ export default function App({
                 </span>
               </div>
               {galleryImages.length > 1 && (
-                <div className="gallery-strip" role="tablist" aria-label={`${activeProduct.name} — views of this colour`}>
+                <div className="gallery-strip" role="tablist" aria-label={`${activeProduct.name}, views of this colour`}>
                   {/* Angular views of the SELECTED colour: a different control from
                       the colour swatches in the purchase panel. Same .detail-image
                       box, same object-fit, so switching view cannot shift layout. */}
@@ -2174,7 +2174,7 @@ export default function App({
                 </a>
               ) : (
                 <button className="gold-button" onClick={() => addToCart(activeProduct, activeVariant)}>
-                  Add to bag — {money(unitPrice(activeProduct, activeVariant), activeProduct.currency)}
+                  Add to bag · {money(unitPrice(activeProduct, activeVariant), activeProduct.currency)}
                 </button>
               )}
               <button className="wishlist-wide" onClick={() => toggleWish(activeProduct.id)}>
@@ -2341,7 +2341,7 @@ export default function App({
             <span>HOW WE STARTED · 01</span>
             <h2>
               AVID WOMAN VOGUE is an Owerri fashion house built to make clothes that actually fit.
-              We cut each piece to your body first, and to a size label second —{" "}
+              We cut each piece to your body first, and to a size label second.{" "}
               <em>and every order comes with a personal fitting session.</em>
             </h2>
           </section>
@@ -2352,7 +2352,7 @@ export default function App({
               <h2>Every piece, made with care.</h2>
               <p>
                 Each dress is cut by hand in our Owerri studio, tried on a real body and adjusted
-                before it is finished. We only use fabrics chosen for how they move and wear —
+                before it is finished. We only use fabrics chosen for how they move and wear,
                 nothing is added for decoration alone. We make small numbers so every order gets
                 full attention, and nothing leaves until the fit is right. If it is not right,
                 we fix it. Free.
@@ -2376,7 +2376,7 @@ export default function App({
               <div className="about-value-card">
                 <b>02</b>
                 <h3>Made for your body</h3>
-                <p>Standard sizes are a starting point. We offer personal fittings and made-to-measure cutting so the piece fits you — not a mannequin.</p>
+                <p>Standard sizes are a starting point. We offer personal fittings and made-to-measure cutting so the piece fits you, not a mannequin.</p>
               </div>
               <div className="about-value-card">
                 <b>03</b>
@@ -2386,7 +2386,7 @@ export default function App({
               <div className="about-value-card">
                 <b>04</b>
                 <h3>Wear it for years</h3>
-                <p>We make pieces you keep — not pieces you wear once and retire. Free alterations and re-sizing mean it grows with you.</p>
+                <p>We make pieces you keep, not pieces you wear once and retire. Free alterations and re-sizing mean it grows with you.</p>
               </div>
             </div>
           </section>
@@ -2406,7 +2406,7 @@ export default function App({
             <p className="eyebrow">PRIVATE APPOINTMENTS</p>
             <h1>Book an appointment<br /><em>at the studio.</em></h1>
             <p className="page-hero-note">
-              Meet us at our Owerri studio to be measured, fitted and advised in person — or send
+              Meet us at our Owerri studio to be measured, fitted and advised in person, or send
               your measurements from anywhere in Nigeria and we will handle the rest.
             </p>
             <p>
@@ -2470,7 +2470,7 @@ export default function App({
                   <span>Owerri, Imo State, Nigeria</span>
                 </p>
                 <p className="fitting-studio-hours">
-                  Monday to Saturday · 9:00am – 6:00pm
+                  Monday to Saturday · 9:00am to 6:00pm
                   <span>Closed Sundays and public holidays</span>
                 </p>
                 <div className="fitting-studio-actions">
@@ -2505,7 +2505,7 @@ export default function App({
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 leading-relaxed mt-6">
               We are in Owerri, Imo State, and we deliver anywhere in Nigeria. Call, message or
-              email us — and if you are nearby, tap the map and it will bring you straight to the
+              email us. And if you are nearby, tap the map and it will bring you straight to the
               door.
             </p>
           </section>
@@ -2519,7 +2519,7 @@ export default function App({
                   <span>Owerri, Imo State, Nigeria</span>
                 </p>
                 <p className="contact-line">
-                  Monday to Saturday · 9:00am – 6:00pm
+                  Monday to Saturday · 9:00am to 6:00pm
                   <span>Closed Sundays and public holidays</span>
                 </p>
                 <a className="gold-button contact-directions" href={HOUSE.directions} target="_blank" rel="noopener noreferrer">
@@ -2706,10 +2706,10 @@ export default function App({
                   "",
                   ...cart.map(
                     (item) =>
-                      `• ${item.product.name} — ${item.variant?.colorName ?? "house colour"}, size ${item.size}, qty ${item.qty}, ${money(unitPrice(item.product, item.variant) * item.qty, item.product.currency)}`,
+                      `• ${item.product.name}, ${item.variant?.colorName ?? "house colour"}, size ${item.size}, qty ${item.qty}, ${money(unitPrice(item.product, item.variant) * item.qty, item.product.currency)}`,
                   ),
                   "",
-                  `Subtotal: $${cartSubtotal}`,
+                  `Subtotal: ${money(cartSubtotal)}`,
                   "",
                   "Please confirm availability, delivery and how to pay.",
                 ].join("\n"),
@@ -2755,7 +2755,7 @@ export default function App({
                 ))}
               </div>
               <button className="gold-button" onClick={() => addToCart(quickProduct, quickVariant)}>
-                Add to bag — {money(unitPrice(quickProduct, quickVariant), quickProduct.currency)}
+                Add to bag · {money(unitPrice(quickProduct, quickVariant), quickProduct.currency)}
               </button>
               <button className="inline-link" onClick={() => setSizeGuideOpen(true)}>Size guide &amp; measurements</button>
               <button className="text-link" onClick={() => { const product = quickProduct; const variant = quickVariant; setQuickProduct(null); openProduct(product, variant); }}>See the full piece <span>↗</span></button>
@@ -2772,7 +2772,7 @@ export default function App({
             <h2>Measurements we cut to</h2>
             <p className="guide-note">
               Measure over your underwear and keep the tape level. If you fall between two sizes,
-              take the larger one — alterations are complimentary on every order.
+              take the larger one. Alterations are complimentary on every order.
             </p>
             <table className="size-guide-table">
               <thead>
@@ -2839,7 +2839,7 @@ export default function App({
             {query.trim() && searchResults.length === 0 && (
               <p className="search-empty">
                 Nothing matches “{query.trim()}”. Try a collection or a fabric, or contact us
-                — most pieces can be made to order.
+                . Most pieces can be made to order.
               </p>
             )}
             <button className="text-link" onClick={() => { setSearchOpen(false); goShop(); }}>

@@ -71,7 +71,7 @@ export default async function AdminOverviewPage() {
           <div className="table-row" key={order.id}>
             <span>{order.reference}</span>
             <span>{order.customer}</span>
-            <span>{order.product ?? '—'}</span>
+            <span>{order.product ?? 'None'}</span>
             <span className="status">{order.status}</span>
             <span>{money(order.total)}</span>
           </div>

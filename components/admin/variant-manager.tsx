@@ -101,7 +101,7 @@ export default function VariantManager({
         <h3>Colour variants</h3>
         <p>
           Each colour is a real variant with its own photography, SKU and stock. Upload images directly from the
-          same shoot and framing — <strong>first image primary, additional ones become gallery angles</strong> on
+          same shoot and framing: <strong>first image primary, additional ones become gallery angles</strong> on
           the product page. A colour left without an image renders greyed as <em> Photo on request</em> on the
           storefront and cannot be selected; no other colour&apos;s photo is shown in its place.
         </p>
@@ -124,12 +124,12 @@ export default function VariantManager({
         </p>
       </div>
 
-      {drafts.length === 0 && <p className="variant-empty">No colours yet — the shop falls back to the main image.</p>}
+      {drafts.length === 0 && <p className="variant-empty">No colours yet, so the shop falls back to the main image.</p>}
 
       {pendingPhotography > 0 && (
         <p className="variant-manager-warning">
           {pendingPhotography} colour{drafts.length === 1 ? '' : 's'} of {drafts.length}{' '}
-          {pendingPhotography === 1 ? 'has' : 'have'} no image yet — greyed as <em>Photo on request</em> and
+          {pendingPhotography === 1 ? 'has' : 'have'} no image yet, greyed as <em>Photo on request</em> and
           unselectable on the storefront until one is added.
         </p>
       )}
@@ -176,7 +176,7 @@ export default function VariantManager({
               Photography
               <span className={`variant-photo-count ${draft.images.trim() === '' ? 'is-empty' : ''}`}>
                 {draft.images.trim() === ''
-                  ? 'No images — photo on request'
+                  ? 'No images, photo on request'
                   : `${draft.images.split('\n').filter((line) => line.trim()).length} image(s)`}
               </span>
             </span>
@@ -188,7 +188,7 @@ export default function VariantManager({
           </div>
           {draft.images.trim() === '' && (
             <p className="variant-row-warning">
-              No photography yet — this colour shows greyed as <em>Photo on request</em> and can&apos;t be
+              No photography yet, so this colour shows greyed as <em>Photo on request</em> and can&apos;t be
               selected. Add a shot from the same shoot and framing as the other colours.
             </p>
           )}

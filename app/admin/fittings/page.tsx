@@ -109,7 +109,7 @@ export default async function AdminFittingsPage({
           <p className="eyebrow">WHAT THE CLIENTS SAID</p>
           {withNotes.map((request) => (
             <p key={request.id} style={{ marginTop: 10, fontSize: 12 }}>
-              <b>{request.name}</b> — {request.notes}
+              <b>{request.name}</b>: {request.notes}
             </p>
           ))}
         </aside>

@@ -28,7 +28,7 @@ export default async function AdminPageCopyPage() {
 
       <p className="settings-note" style={{ marginBottom: 26 }}>
         The words on the home and shop pages. Leave a field empty to keep the line the site ships
-        with. Every save is live immediately — no separate publish step.
+        with. Every save is live immediately, with no separate publish step.
       </p>
 
       <div className="content-blocks">

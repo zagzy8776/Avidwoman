@@ -62,10 +62,10 @@ export default function ProductForm({
         <label>
           Currency
           <select name="currency" defaultValue={product?.currency ?? 'USD'}>
-            <option value="USD">USD — US Dollar</option>
-            <option value="NGN">NGN — Naira</option>
-            <option value="GBP">GBP — Pound</option>
-            <option value="EUR">EUR — Euro</option>
+            <option value="USD">USD | US Dollar</option>
+            <option value="NGN">NGN | Naira</option>
+            <option value="GBP">GBP | Pound</option>
+            <option value="EUR">EUR | Euro</option>
           </select>
         </label>
       </div>
@@ -95,7 +95,7 @@ export default function ProductForm({
           <select name="tag" defaultValue={product?.tag ?? ''}>
             {TAGS.map((tag) => (
               <option key={tag} value={tag}>
-                {tag || '— none —'}
+                {tag || 'None'}
               </option>
             ))}
           </select>
@@ -103,7 +103,7 @@ export default function ProductForm({
         <label>
           Fabric
           <select name="fabric" defaultValue={product?.fabric ?? ''}>
-            <option value="">—</option>
+            <option value="">None</option>
             {FABRICS.map((fabric) => (
               <option key={fabric} value={fabric}>
                 {fabric}
@@ -160,14 +160,14 @@ export default function ProductForm({
         </select>
         <small className="admin-hint">
           Hold Ctrl (Cmd on Mac) to pick more than one. Shown in this order under “See also” on the
-          product page. Select none and the site chooses for you — the same collection first, then
+          product page. Select none and the site chooses for you. The same collection first, then
           the closest fabric.
         </small>
       </label>
 
       <label className="admin-checkbox admin-archive">
         <input type="checkbox" name="archived" defaultChecked={product?.archived ?? false} />
-        Archived — keep the record and its colours, but remove it from the shop, search and related
+        Archived: keep the record and its colours, but remove it from the shop, search and related
         rows. Nothing is deleted.
       </label>
 

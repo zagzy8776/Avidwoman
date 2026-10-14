@@ -27,19 +27,19 @@ type Params = { params: Promise<{ id: string }> }
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { id } = await params
   const product = await getProduct(Number(id)).catch(() => null)
-  if (!product) return { title: 'Piece not found — AVID WOMAN VOGUE' }
+  if (!product) return { title: 'Piece not found | AVID WOMAN VOGUE' }
 
   const price = money(product.price, product.currency)
   const description =
     product.description ??
-    `${product.name} from the ${product.collection} collection — hand-cut and finished in our Owerri studio. ${price}.`
+    `${product.name} from the ${product.collection} collection, hand-cut and finished in our Owerri studio. ${price}.`
 
   return {
-    title: `${product.name} — ${product.collection} | AVID WOMAN VOGUE Owerri`,
+    title: `${product.name} | ${product.collection} | AVID WOMAN VOGUE Owerri`,
     description,
     alternates: { canonical: `/product/${product.id}` },
     openGraph: {
-      title: `${product.name} — AVID WOMAN VOGUE`,
+      title: `${product.name} | AVID WOMAN VOGUE`,
       description,
       images: product.image ? [{ url: product.image, alt: product.alt }] : undefined,
       type: 'website',

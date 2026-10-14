@@ -32,7 +32,7 @@ type Params = { params: Promise<{ city: string }> }
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { city: slug } = await params
   const place = getLocation(slug)
-  if (!place) return { title: 'Location not found — AVID WOMAN VOGUE' }
+  if (!place) return { title: 'Location not found | AVID WOMAN VOGUE' }
 
   const title = `Bespoke Tailoring & Fashion House for ${place.city}, ${place.state} | AVID WOMAN VOGUE`
   const description = `Made-to-measure dresses, Ankara, Adire and Aso-Oke for clients in ${place.city}, ${place.state}. Cut by hand in our Owerri studio and delivered in ${place.deliveryDays} working days. Private fittings and remote measuring.`
@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     description,
     alternates: { canonical: `/locations/${place.slug}` },
     openGraph: {
-      title: `AVID WOMAN VOGUE — Bespoke Tailoring for ${place.city}`,
+      title: `AVID WOMAN VOGUE | Bespoke Tailoring for ${place.city}`,
       description,
       url: `${await serverOrigin()}/locations/${place.slug}`,
       siteName: 'AVID WOMAN VOGUE',
@@ -67,7 +67,7 @@ export default async function LocationPage({ params }: Params) {
       ? 'Come to the studio in Owerri and we will measure you in person before anything is cut.'
       : place.measuring === 'courier'
         ? 'We send you a short measuring guide, you take the numbers at home, and you send them to us on WhatsApp. Most pieces need nothing more than that.'
-        : 'You can come to the studio in Owerri for a fitting, or take the numbers at home with our guide and send them on WhatsApp — whichever suits you.'
+        : 'You can come to the studio in Owerri for a fitting, or take the numbers at home with our guide and send them on WhatsApp, whichever suits you.'
 
   /** Real questions, with the answers shown on the page. */
   const faqs = [
@@ -85,7 +85,7 @@ export default async function LocationPage({ params }: Params) {
     },
     {
       q: `Can I send my own fabric?`,
-      a: 'Yes. Many clients already own cloth — George, Aso-Oke, Ankara, Akwete — and would rather we cut and finish it. Send it to the studio and we will work to the house patterns.',
+      a: 'Yes. Many clients already own cloth (George, Aso-Oke, Ankara, Akwete) and would rather we cut and finish it. Send it to the studio and we will work to the house patterns.',
     },
     {
       q: `Do you make aso-ebi for groups in ${place.city}?`,
@@ -93,7 +93,7 @@ export default async function LocationPage({ params }: Params) {
     },
     {
       q: `What does it cost?`,
-      a: 'Ready-made pieces are priced on the site in Naira. Made-to-measure and group orders are quoted once we know the fabric, the style and the number of pieces — message us and we will give you a figure.',
+      a: 'Ready-made pieces are priced on the site in Naira. Made-to-measure and group orders are quoted once we know the fabric, the style and the number of pieces. Message us and we will give you a figure.',
     },
   ]
 
@@ -166,7 +166,7 @@ export default async function LocationPage({ params }: Params) {
         <p className="page-hero-note">
           We cut and sew by hand in our Owerri studio and deliver to {place.city} in about{" "}
           {place.deliveryDays} working days. Fittings in person, or measurements taken at home and
-          sent to us — whichever suits you.
+          sent to us, whichever suits you.
         </p>
         <p>
           {place.state} · {place.occasions.join(' · ')}
@@ -199,7 +199,7 @@ export default async function LocationPage({ params }: Params) {
           <div>
             <span>Studio</span>
             <b>Owerri, Imo State</b>
-            <small>Monday to Saturday, 9am–6pm</small>
+            <small>Monday to Saturday, 9am to 6pm</small>
           </div>
         </div>
 

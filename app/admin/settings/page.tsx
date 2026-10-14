@@ -50,18 +50,18 @@ export default async function AdminSettingsPage() {
           <label>
             Default currency
             <select name="currency" defaultValue={settings.currency}>
-              <option value="USD">USD — US Dollar</option>
-              <option value="NGN">NGN — Naira</option>
-              <option value="GBP">GBP — Pound</option>
-              <option value="EUR">EUR — Euro</option>
+              <option value="USD">USD | US Dollar</option>
+              <option value="NGN">NGN | Naira</option>
+              <option value="GBP">GBP | Pound</option>
+              <option value="EUR">EUR | Euro</option>
             </select>
           </label>
 
-          <p className="eyebrow">PAYMENT — BANK TRANSFER</p>
+          <p className="eyebrow">PAYMENT · BANK TRANSFER</p>
           <p className="settings-note">
             Checkout is paid by bank transfer: the client sees these details on the checkout page and
             again on her order confirmation, and the order waits as <em>Pending payment</em> until
-            you mark it paid. Saving here is live immediately — no approval step.
+            you mark it paid. Saving here is live immediately, with no approval step.
             {hasBankDetails(settings.bankDetails)
               ? ''
               : ' Until all three fields are filled, checkout tells the client the details are coming by email instead of showing an account to pay into.'}

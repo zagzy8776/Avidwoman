@@ -33,7 +33,7 @@ export const MEDIA_SLOTS: MediaSlot[] = [
   },
   {
     id: 'collection:signature',
-    label: 'Collection — Signature 01',
+    label: 'Collection · Signature 01',
     group: 'Collections',
     aspect: '4:5',
     cssAspect: '4 / 5',
@@ -41,7 +41,7 @@ export const MEDIA_SLOTS: MediaSlot[] = [
   },
   {
     id: 'collection:couture',
-    label: 'Collection — Couture',
+    label: 'Collection · Couture',
     group: 'Collections',
     aspect: '4:5',
     cssAspect: '4 / 5',
@@ -49,7 +49,7 @@ export const MEDIA_SLOTS: MediaSlot[] = [
   },
   {
     id: 'heritage:1',
-    label: 'Heritage band — primary',
+    label: 'Heritage band · primary',
     group: 'Editorial',
     aspect: '3:4',
     cssAspect: '3 / 4',
@@ -57,7 +57,7 @@ export const MEDIA_SLOTS: MediaSlot[] = [
   },
   {
     id: 'heritage:2',
-    label: 'Heritage band — secondary',
+    label: 'Heritage band · secondary',
     group: 'Editorial',
     aspect: '3:4',
     cssAspect: '3 / 4',

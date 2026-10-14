@@ -8,7 +8,7 @@ import AdminShell from '@/components/admin/admin-shell'
  */
 export const dynamic = 'force-dynamic'
 
-export const metadata = { title: 'Admin — AVID WOMAN VOGUE' }
+export const metadata = { title: 'Admin | AVID WOMAN VOGUE' }
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return <AdminShell>{children}</AdminShell>

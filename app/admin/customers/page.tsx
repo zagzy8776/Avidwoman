@@ -60,7 +60,7 @@ export default async function AdminCustomersPage() {
               <i>{initials(customer.name)}</i>
               <span>
                 <strong>{customer.name}</strong>
-                <small>{customer.email ?? '—'}</small>
+                <small>{customer.email ?? 'None'}</small>
               </span>
               <b>{customer.orders} orders</b>
               <em>{money(customer.spend)}</em>
@@ -69,7 +69,7 @@ export default async function AdminCustomersPage() {
           ))}
 
           {customers.length === 0 ? (
-            <div className="empty-state">No customers yet — they appear once orders exist.</div>
+            <div className="empty-state">No customers yet. They appear once orders exist.</div>
           ) : null}
         </div>
       </article>

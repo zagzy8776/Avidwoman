@@ -19,12 +19,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const origin = await serverOrigin()
 
   return {
-    title: 'Where We Serve — Bespoke Tailoring Across Nigeria | AVID WOMAN VOGUE',
+    title: 'Where We Serve | Bespoke Tailoring Across Nigeria | AVID WOMAN VOGUE',
     description:
       'AVID WOMAN VOGUE makes made-to-measure dresses, Ankara, Adire and Aso-Oke in Owerri, Imo State, and delivers to clients across all 36 states of Nigeria. Find your city.',
     alternates: { canonical: '/locations' },
     openGraph: {
-      title: 'Where We Serve — AVID WOMAN VOGUE',
+      title: 'Where We Serve | AVID WOMAN VOGUE',
       description:
         'Hand-cut tailoring from our Owerri studio, delivered across all 36 states of Nigeria.',
       url: `${origin}/locations`,
@@ -50,7 +50,7 @@ export default async function LocationsPage() {
         </h1>
         <p className="page-hero-note">
           Every piece is cut and sewn by hand at our Owerri studio, then sent by courier. We do not
-          pretend to have a shop in every city — we would rather tell you exactly how delivery,
+          pretend to have a shop in every city. We would rather tell you exactly how delivery,
           measuring and fittings work where you are.
         </p>
         <p>
@@ -68,7 +68,7 @@ export default async function LocationsPage() {
           <div>
             <span>Delivered</span>
             <b>Nationwide</b>
-            <small>By courier, 1–7 working days depending on distance</small>
+            <small>By courier, 1 to 7 working days depending on distance</small>
           </div>
           <div>
             <span>Measured</span>
@@ -97,7 +97,7 @@ export default async function LocationsPage() {
         <div className="location-cta">
           <h2>Not sure if we reach you?</h2>
           <p>
-            If your city is not listed, message us anyway — the courier network reaches more places
+            If your city is not listed, message us anyway. The courier network reaches more places
             than this list, and we will tell you honestly whether we can serve you.
           </p>
           <div className="location-cta-actions">

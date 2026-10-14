@@ -366,12 +366,12 @@ export type ContentBlock = {
 
 /** Slug → label. The admin iterates this, so a new block is one line here. */
 export const CONTENT_BLOCK_KEYS = [
-  { key: 'home.hero', label: 'Homepage — hero' },
-  { key: 'home.house', label: 'Homepage — the house' },
-  { key: 'home.fittings', label: 'Homepage — fittings & appointments' },
-  { key: 'home.newsletter', label: 'Homepage — mailing list' },
-  { key: 'shop.heritage', label: 'Shop — heritage fabrics' },
-  { key: 'footer.about', label: 'Footer — house line' },
+  { key: 'home.hero', label: 'Homepage · hero' },
+  { key: 'home.house', label: 'Homepage · the house' },
+  { key: 'home.fittings', label: 'Homepage · fittings & appointments' },
+  { key: 'home.newsletter', label: 'Homepage · mailing list' },
+  { key: 'shop.heritage', label: 'Shop · heritage fabrics' },
+  { key: 'footer.about', label: 'Footer · house line' },
 ] as const
 
 export type ContentKey = (typeof CONTENT_BLOCK_KEYS)[number]['key']
@@ -384,7 +384,7 @@ export const CONTENT_DEFAULTS: Record<ContentKey, Omit<ContentBlock, 'key' | 'la
   'home.hero': {
     eyebrow: 'AVID WOMAN VOGUE · OWERRI FASHION HOUSE',
     title: 'Best Fashion House\n*in Owerri.*',
-    body: 'Premium handmade clothes cut and finished by hand in our Owerri studio, in black, ivory and gold. Every run is limited, and every piece is made to wear for years, not one season — made for your needs, your body, your life.',
+    body: 'Premium handmade clothes cut and finished by hand in our Owerri studio, in black, ivory and gold. Every run is limited, and every piece is made to wear for years, not one season, made for your needs, your body, your life.',
     ctaLabel: 'Shop the collection',
     ctaHref: 'shop',
     image: '',
@@ -393,7 +393,7 @@ export const CONTENT_DEFAULTS: Record<ContentKey, Omit<ContentBlock, 'key' | 'la
   'home.house': {
     eyebrow: 'THE FASHION HOUSE',
     title: 'Well-made clothes.\n*Made to last.*',
-    body: 'We are an Owerri fashion house, not a fast-fashion shop. Every piece is cut and sewn by hand, in small numbers, and checked one by one before it leaves us. We pick fabrics for how they feel and how long they last — so you can wear them for years.',
+    body: 'We are an Owerri fashion house, not a fast-fashion shop. Every piece is cut and sewn by hand, in small numbers, and checked one by one before it leaves us. We pick fabrics for how they feel and how long they last, so you can wear them for years.',
     ctaLabel: 'Our story',
     ctaHref: 'about',
     image: '',
@@ -401,8 +401,8 @@ export const CONTENT_DEFAULTS: Record<ContentKey, Omit<ContentBlock, 'key' | 'la
   },
   'home.fittings': {
     eyebrow: 'APPOINTMENTS & FITTINGS',
-    title: 'Your size,\n*your fit.*',
-    body: 'Book a private fitting at our Owerri studio, or send your measurements from anywhere in Nigeria. We adjust the length, fix the fit and finish the piece on you. Already own one of our pieces? Bring it in — we quote for every adjustment before we start.',
+    title: 'Your size.\n*Your fit.*',
+    body: 'Book a private fitting at our Owerri studio, or send your measurements from anywhere in Nigeria. We adjust the length, fix the fit and finish the piece on you. Already own one of our pieces? Bring it in and we quote for every adjustment before we start.',
     ctaLabel: 'Book an appointment',
     ctaHref: 'fitting',
     image: '',
@@ -419,8 +419,8 @@ export const CONTENT_DEFAULTS: Record<ContentKey, Omit<ContentBlock, 'key' | 'la
   },
   'shop.heritage': {
     eyebrow: 'HERITAGE FABRICS · ANKARA & ADIRE',
-    title: 'Ankara, adire and aso-oke,\n*cut to our own patterns.*',
-    body: 'Hand-dyed adire and carefully sourced ankara, cut into the same shapes as the main collection. Each fabric length is chosen by hand — no two runs are exactly alike.',
+    title: 'Ankara, adire and aso-oke\n*cut to our own patterns.*',
+    body: 'Hand-dyed adire and carefully sourced ankara, cut into the same shapes as the main collection. Each fabric length is chosen by hand, so no two runs are exactly alike.',
     ctaLabel: 'Shop heritage fabrics',
     ctaHref: 'shop-grid',
     image: '',
@@ -429,7 +429,7 @@ export const CONTENT_DEFAULTS: Record<ContentKey, Omit<ContentBlock, 'key' | 'la
   'footer.about': {
     eyebrow: '',
     title: 'AVID WOMAN VOGUE',
-    body: 'An Owerri fashion house. Small runs, handmade with care — with a personal fitting on every order.',
+    body: 'An Owerri fashion house. Small runs, handmade with care, with a personal fitting on every order.',
     ctaLabel: '',
     ctaHref: '',
     image: '',

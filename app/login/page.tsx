@@ -3,7 +3,7 @@ import { signIn } from './actions'
 import PasswordField from '@/components/admin/password-field'
 import { isSupabaseConfigured } from '@/lib/supabase/server'
 
-export const metadata = { title: 'Sign in — AVID WOMAN VOGUE' }
+export const metadata = { title: 'Sign in | AVID WOMAN VOGUE' }
 
 export default async function LoginPage({
   searchParams,

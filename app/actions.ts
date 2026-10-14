@@ -24,7 +24,7 @@ export async function requestFitting(formData: FormData): Promise<{ ok: boolean;
   const service = text(formData, 'service')
 
   if (!name || !email) {
-    return { ok: false, message: 'Add your name and email so the atelier can confirm a time.' }
+    return { ok: false, message: 'Add your name and email so the studio can confirm a time.' }
   }
 
   try {
@@ -39,7 +39,7 @@ export async function requestFitting(formData: FormData): Promise<{ ok: boolean;
     revalidatePath('/admin/fittings')
     return {
       ok: true,
-      message: 'Thank you — your request is with the atelier. We reply within one working day.',
+      message: 'Thank you. Your request is with the studio, and we reply within one working day.',
     }
   } catch (error) {
     console.error(
@@ -49,7 +49,7 @@ export async function requestFitting(formData: FormData): Promise<{ ok: boolean;
     return {
       ok: false,
       message:
-        'We could not save that just now, so it would be lost if you closed this page. Send it by email instead — it is already written out for you.',
+        'We could not save that just now, so it would be lost if you closed this page. Send it by email instead. It is already written out for you.',
     }
   }
 }

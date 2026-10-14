@@ -40,9 +40,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const origin = await serverOrigin()
 
   return {
-  title: 'AVID WOMAN VOGUE — Best Fashion House & Thrift Store in Owerri, Nigeria',
+  title: 'AVID WOMAN VOGUE | Best Fashion House & Thrift Store in Owerri, Nigeria',
   description:
-    'The best fashion house in Owerri, Imo State. Handmade dresses, Ankara, Adire and Aso-Oke, custom tailoring and fittings — plus our thrift store. Serving Port Harcourt, Aba, Umuahia and all of Nigeria.',
+    'The best fashion house in Owerri, Imo State. Handmade dresses, Ankara, Adire and Aso-Oke, custom tailoring and fittings, plus our thrift store. Serving Port Harcourt, Aba, Umuahia and all of Nigeria.',
   keywords: [
     // Fashion house
     'best fashion house in Nigeria',
@@ -154,7 +154,7 @@ export async function generateMetadata(): Promise<Metadata> {
     canonical: '/',
   },
   openGraph: {
-    title: 'AVID WOMAN VOGUE — Best Fashion House in Nigeria',
+    title: 'AVID WOMAN VOGUE | Best Fashion House in Nigeria',
     description: 'Luxury handmade fashion in Owerri, Imo State. Best tailor for custom Ankara, Adire, Aso-Oke. Shop premium Nigerian fashion online.',
     url: origin,
     siteName: 'AVID WOMAN VOGUE',
@@ -171,7 +171,7 @@ export async function generateMetadata(): Promise<Metadata> {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AVID WOMAN VOGUE — Best Fashion House in Nigeria',
+    title: 'AVID WOMAN VOGUE | Best Fashion House in Nigeria',
     description: 'Luxury handmade fashion in Lagos, Owerri, Port Harcourt. Best tailor for custom Ankara, Adire, Aso-Oke.',
     images: ['/avid-woman-vogue-logo.png'],
     creator: '@avidwoman',
