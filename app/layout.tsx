@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Cormorant_Garamond, Manrope } from 'next/font/google'
+import { absoluteUrl, SITE_URL } from '@/lib/site'
 import './globals.css'
 
 /* Brand type is self-hosted by next/font: the files are downloaded once at
@@ -65,14 +66,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://avidwomanvogue.com'),
+  metadataBase: new URL(SITE_URL),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: 'AVID WOMAN VOGUE — Best Fashion House in Nigeria',
     description: 'Luxury handmade fashion in Lagos, Owerri, Port Harcourt. Best tailor for custom Ankara, Adire, Aso-Oke. Shop premium Nigerian fashion online.',
-    url: 'https://avidwomanvogue.com',
+    url: SITE_URL,
     siteName: 'AVID WOMAN VOGUE',
     locale: 'en_NG',
     type: 'website',
@@ -136,9 +137,9 @@ export default function RootLayout({
               '@type': 'ClothingStore',
               name: 'AVID WOMAN VOGUE',
               description: 'Best luxury fashion house in Nigeria. Premium handmade clothes, custom tailoring, Ankara, Adire, Aso-Oke.',
-              url: 'https://avidwomanvogue.com',
-              logo: 'https://avidwomanvogue.com/avid-woman-vogue-logo.png',
-              image: 'https://avidwomanvogue.com/avid-woman-vogue-logo.png',
+              url: SITE_URL,
+              logo: absoluteUrl('/avid-woman-vogue-logo.png'),
+              image: absoluteUrl('/avid-woman-vogue-logo.png'),
               telephone: '+2347063243954',
               priceRange: '₦₦₦',
               address: {

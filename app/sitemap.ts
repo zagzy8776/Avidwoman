@@ -1,12 +1,16 @@
 import { MetadataRoute } from 'next'
 import { listProducts } from '@/lib/data/products'
+import { SITE_URL } from '@/lib/site'
 
 /**
  * Dynamic sitemap generator — includes all public pages plus every active product.
  * Optimized for Nigerian search engines with city-specific keywords.
+ *
+ * The origin comes from NEXT_PUBLIC_SITE_URL (see lib/site.ts), so a Vercel
+ * preview and the live domain each publish their own correct URLs.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://avidwomanvogue.com'
+  const baseUrl = SITE_URL
   
   // Get all active (non-archived) products
   const products = await listProducts()
