@@ -3,6 +3,12 @@ import { listProducts } from '@/lib/data/products'
 import { SITE_URL } from '@/lib/site'
 
 /**
+ * The sitemap reads the catalogue through the cookie-aware server client, so it
+ * must render per request rather than be frozen at build time.
+ */
+export const dynamic = 'force-dynamic'
+
+/**
  * Dynamic sitemap generator — includes all public pages plus every active product.
  * Optimized for Nigerian search engines with city-specific keywords.
  *

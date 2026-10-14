@@ -5,6 +5,15 @@ import { listProducts } from '@/lib/data/products'
 import { getSettings } from '@/lib/data/settings'
 import { DEFAULT_SETTINGS, type StoreSettings } from '@/lib/data/types'
 
+/**
+ * The storefront reads Supabase through the cookie-aware server client, so it
+ * can never be prerendered at build time — Next.js would try, hit
+ * DYNAMIC_SERVER_USAGE, and fail the build. Rendering per request is also what
+ * the shop wants: an edit in /admin shows up on the next visit, with no
+ * rebuild and no stale catalogue.
+ */
+export const dynamic = 'force-dynamic'
+
 // The storefront stays a single client component; this shell is the only part
 // that talks to Supabase for it. Products, lookbook, page copy and the footer's
 // social links all come from the same typed data module the admin console

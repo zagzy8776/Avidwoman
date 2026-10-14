@@ -1184,7 +1184,7 @@ export default function App({
   /** Gallery for the current product/colour: variant images, else the product shot. */
   const galleryImages = useMemo(() => {
     const fromVariant = activeVariant?.images ?? [];
-    return fromVariant.length ? fromVariant : [activeProduct.image];
+    return fromVariant.length ? fromVariant : [activeProduct?.image ?? ""];
   }, [activeProduct, activeVariant]);
 
   /** Sizes offered by the active colour (falls back to the house size run). */
@@ -1193,8 +1193,10 @@ export default function App({
   // TODO(data-layer): replace both of these with lib/data/reviews.ts once the
   // `reviews` table exists — see the block above `SIZE_GUIDE` and the `Review`
   // type in lib/data/types.ts. The section below only needs these two values.
-  const reviewSummary = placeholderReviewSummary(activeProduct.id);
-  const reviews = placeholderReviews(activeProduct.id);
+  // Keyed off a fallback id so an empty catalogue (Supabase unreachable) still
+  // renders instead of throwing on an undefined product.
+  const reviewSummary = placeholderReviewSummary(activeProduct?.id ?? 0);
+  const reviews = placeholderReviews(activeProduct?.id ?? 0);
 
   const navigate = (next: View) => {
     setView(next);
@@ -1274,6 +1276,7 @@ export default function App({
    * extra angles in the strip are fetched when the shopper asks for them.
    */
   useEffect(() => {
+    if (!activeProduct) return;
     const sources = new Set<string>();
     liveVariants(activeProduct).forEach((variant) => {
       const [first] = variant.images;
@@ -1816,7 +1819,7 @@ export default function App({
         </main>
       )}
 
-      {view === "product" && (
+      {view === "product" && activeProduct && (
         <main className="page-main product-page">
           <section className="product-detail">
             <div className="product-gallery">
