@@ -18,7 +18,6 @@ import {
 } from "@/lib/data/types";
 import { requestFitting } from "@/app/actions";
 import { money } from "@/lib/format";
-import { SITE_URL } from "@/lib/site";
 import ParticleLogo from "./particle-logo";
 import StudioLighting from "./studio-lighting";
 
@@ -1156,6 +1155,7 @@ export default function App({
   initialView = "home",
   initialCollection,
   initialProductId,
+  origin,
 }: {
   products?: Product[];
   lookbook?: LookbookFrame[];
@@ -1187,6 +1187,13 @@ export default function App({
    * server-rendered with its own structured data.
    */
   initialProductId?: number;
+  /**
+   * The origin this page is served from, passed down from the server route so
+   * the Product schema's url names the right host. The browser cannot work this
+   * out for itself: Vercel's domain variables are server-only, and guessing
+   * would risk a hydration mismatch.
+   */
+  origin?: string;
 }) {
   /** One block, resolved against the shipped defaults. */
   const block = (key: ContentKey): ContentBlock => ({
@@ -2230,7 +2237,7 @@ export default function App({
                 material: activeProduct.fabric ?? undefined,
                 offers: {
                   "@type": "Offer",
-                  url: `${SITE_URL}/product/${activeProduct.id}`,
+                  url: `${origin ?? ""}/product/${activeProduct.id}`,
                   priceCurrency: activeProduct.currency,
                   price: String(unitPrice(activeProduct, activeVariant)),
                   itemCondition: "https://schema.org/NewCondition",

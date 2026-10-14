@@ -1,9 +1,16 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import StorefrontRoute from '@/components/storefront-route'
-import { getProduct, listProducts } from '@/lib/data/products'
+import { getProduct } from '@/lib/data/products'
 import { money } from '@/lib/format'
 
+/**
+ * Rendered per request.
+ *
+ * The canonical tag and the Product schema's url must name the host actually
+ * serving the page, so nothing here can be baked in at build time. It also has
+ * to read the catalogue anyway, which is a database call.
+ */
 export const dynamic = 'force-dynamic'
 
 type Params = { params: Promise<{ id: string }> }
@@ -38,12 +45,6 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       type: 'website',
     },
   }
-}
-
-/** Pre-render the known pieces; new ones render on demand. */
-export async function generateStaticParams() {
-  const products = await listProducts().catch(() => [])
-  return products.map((product) => ({ id: String(product.id) }))
 }
 
 export default async function ProductPage({ params }: Params) {

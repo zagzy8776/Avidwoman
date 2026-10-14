@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Cormorant_Garamond, Manrope } from 'next/font/google'
-import { absoluteUrl, SITE_URL } from '@/lib/site'
+import { serverOrigin } from '@/lib/server-origin'
 import './globals.css'
 
 /** The house's phone number, in the two forms structured data needs. */
@@ -26,7 +26,20 @@ const sans = Manrope({
   display: 'swap',
 })
 
-export const metadata: Metadata = {
+/**
+ * Metadata is generated per request so every absolute URL it emits — the
+ * canonical tag, the Open Graph url and image, the schema — names the host that
+ * actually served the page.
+ *
+ * A canonical pointing at a domain that does not serve the content is worse
+ * than no canonical at all: it tells Google to look elsewhere, Google finds
+ * nothing, and the page can be dropped from the index. That is what was
+ * happening while the site ran on a vercel.app address with no custom domain.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const origin = await serverOrigin()
+
+  return {
   title: 'AVID WOMAN VOGUE — Best Fashion House & Thrift Store in Owerri, Nigeria',
   description:
     'The best fashion house in Owerri, Imo State. Handmade dresses, Ankara, Adire and Aso-Oke, custom tailoring and fittings — plus our thrift store. Serving Port Harcourt, Aba, Umuahia and all of Nigeria.',
@@ -136,14 +149,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(SITE_URL),
+  metadataBase: new URL(origin),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: 'AVID WOMAN VOGUE — Best Fashion House in Nigeria',
-    description: 'Luxury handmade fashion in Lagos, Owerri, Port Harcourt. Best tailor for custom Ankara, Adire, Aso-Oke. Shop premium Nigerian fashion online.',
-    url: SITE_URL,
+    description: 'Luxury handmade fashion in Owerri, Imo State. Best tailor for custom Ankara, Adire, Aso-Oke. Shop premium Nigerian fashion online.',
+    url: origin,
     siteName: 'AVID WOMAN VOGUE',
     locale: 'en_NG',
     type: 'website',
@@ -183,6 +196,7 @@ export const metadata: Metadata = {
     ],
     apple: '/avid-woman-vogue-logo.png',
   },
+  }
 }
 
 export const viewport: Viewport = {
@@ -190,11 +204,15 @@ export const viewport: Viewport = {
   themeColor: '#000000',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  // Same origin the metadata used, so the schema's url, logo and @id all point
+  // at the host serving this page.
+  const origin = await serverOrigin()
+
   return (
     <html lang="en" className={`${sans.variable} ${serif.variable}`}>
       <head>
@@ -205,13 +223,13 @@ export default function RootLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'ClothingStore',
-              '@id': `${SITE_URL}/#store`,
+              '@id': `${origin}/#store`,
               name: 'AVID WOMAN VOGUE',
               description:
                 'Best fashion house in Owerri, Imo State. Handmade dresses, Ankara, Adire and Aso-Oke, custom tailoring, fittings and a thrift store. Delivered across Nigeria.',
-              url: SITE_URL,
-              logo: absoluteUrl('/avid-woman-vogue-logo.png'),
-              image: absoluteUrl('/avid-woman-vogue-logo.png'),
+              url: origin,
+              logo: `${origin}/avid-woman-vogue-logo.png`,
+              image: `${origin}/avid-woman-vogue-logo.png`,
               telephone: HOUSE_PHONE_DIAL,
               priceRange: '₦₦',
               currenciesAccepted: 'NGN',

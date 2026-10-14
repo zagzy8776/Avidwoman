@@ -2,9 +2,17 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getLocation, LOCATIONS } from '@/lib/data/locations'
-import { SITE_URL } from '@/lib/site'
+import { serverOrigin } from '@/lib/server-origin'
 
-export const dynamic = 'force-static'
+/**
+ * Rendered per request rather than frozen at build time.
+ *
+ * The canonical tag, the Service schema and the breadcrumb must all name the
+ * host actually serving the page. Pre-rendering bakes in the origin that existed
+ * at build time, which is how the site came to point Google at a domain that did
+ * not exist yet. There is no database read here, so this costs nothing.
+ */
+export const dynamic = 'force-dynamic'
 
 const HOUSE_PHONE = '+2347063243954'
 const HOUSE_WHATSAPP = 'https://wa.me/2347063243954'
@@ -21,10 +29,6 @@ type Params = { params: Promise<{ city: string }> }
  * actually has (how long is delivery, how do I get measured, can I send my own
  * cloth), which is what earns the ranking and the enquiry.
  */
-export function generateStaticParams() {
-  return LOCATIONS.map((location) => ({ city: location.slug }))
-}
-
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { city: slug } = await params
   const place = getLocation(slug)
@@ -40,7 +44,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     openGraph: {
       title: `AVID WOMAN VOGUE — Bespoke Tailoring for ${place.city}`,
       description,
-      url: `${SITE_URL}/locations/${place.slug}`,
+      url: `${await serverOrigin()}/locations/${place.slug}`,
       siteName: 'AVID WOMAN VOGUE',
       locale: 'en_NG',
       type: 'website',
@@ -52,6 +56,11 @@ export default async function LocationPage({ params }: Params) {
   const { city: slug } = await params
   const place = getLocation(slug)
   if (!place) notFound()
+
+  // Every absolute URL on this page names the host that served it, so the
+  // schema and breadcrumb stay valid on the vercel.app address and on the
+  // custom domain alike.
+  const origin = await serverOrigin()
 
   const measuringCopy =
     place.measuring === 'studio'
@@ -97,7 +106,7 @@ export default async function LocationPage({ params }: Params) {
       description: `Hand-cut dresses and traditional Nigerian womenswear made in our Owerri studio and delivered to ${place.city}, ${place.state}.`,
       provider: {
         '@type': 'ClothingStore',
-        '@id': `${SITE_URL}/#store`,
+        '@id': `${origin}/#store`,
         name: 'AVID WOMAN VOGUE',
         telephone: HOUSE_PHONE,
         address: {
@@ -114,7 +123,7 @@ export default async function LocationPage({ params }: Params) {
       },
       availableChannel: {
         '@type': 'ServiceChannel',
-        serviceUrl: `${SITE_URL}/locations/${place.slug}`,
+        serviceUrl: `${origin}/locations/${place.slug}`,
         servicePhone: HOUSE_PHONE,
       },
     },
@@ -131,13 +140,13 @@ export default async function LocationPage({ params }: Params) {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
-        { '@type': 'ListItem', position: 2, name: 'Locations', item: `${SITE_URL}/locations` },
+        { '@type': 'ListItem', position: 1, name: 'Home', item: origin },
+        { '@type': 'ListItem', position: 2, name: 'Locations', item: `${origin}/locations` },
         {
           '@type': 'ListItem',
           position: 3,
           name: place.city,
-          item: `${SITE_URL}/locations/${place.slug}`,
+          item: `${origin}/locations/${place.slug}`,
         },
       ],
     },

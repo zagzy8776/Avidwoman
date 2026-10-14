@@ -1,5 +1,4 @@
-import Storefront from '@/components/avid-app'
-import { loadStorefront } from '@/lib/storefront'
+import StorefrontRoute from '@/components/storefront-route'
 
 /**
  * The storefront reads Supabase through the cookie-aware server client, so it
@@ -10,30 +9,13 @@ import { loadStorefront } from '@/lib/storefront'
  */
 export const dynamic = 'force-dynamic'
 
-// The storefront stays a single client component; this shell is the only part
-// that talks to Supabase for it. Products, lookbook, page copy and the footer's
-// social links all come from the same typed data module the admin console
-// writes to, so an edit in /admin shows up on the storefront.
+// The storefront stays a single client component; StorefrontRoute is the shell
+// that loads the shared catalogue/copy/settings and tells it which page to open.
 //
-// The other public pages (/shop, /about, /fitting, /contact, /thrift) are real
-// routes that render the same component with a different opening view — see
-// components/storefront-route.tsx.
-export default async function HomePage() {
-  const { products, lookbook, settings, content } = await loadStorefront()
-
-  return (
-    <Storefront
-      products={products}
-      lookbook={lookbook}
-      social={settings.social}
-      contactEmail={settings.contactEmail}
-      // Payment is a manual bank transfer: the checkout page and every order
-      // confirmation show this, and it is snapshotted onto each order.
-      bankDetails={settings.bankDetails}
-      // The owner's words for the hero, house, fittings, mailing list,
-      // heritage and footer blocks (Admin → Content → Page copy).
-      content={content}
-    />
-  )
+// The other public pages (/shop, /about, /fitting, /contact, /thrift,
+// /locations, /product/[id]) are real routes that render the same component
+// with a different opening view.
+export default function HomePage() {
+  return <StorefrontRoute view="home" />
 }
 

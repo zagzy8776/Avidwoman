@@ -1,5 +1,6 @@
 import Storefront from '@/components/avid-app'
 import { loadStorefront } from '@/lib/storefront'
+import { serverOrigin } from '@/lib/server-origin'
 
 /**
  * Renders the storefront with a chosen page open.
@@ -19,7 +20,10 @@ export default async function StorefrontRoute({
   /** Opens a specific piece, used by /product/[id]. */
   productId?: number
 }) {
-  const { products, lookbook, settings, content } = await loadStorefront()
+  const [{ products, lookbook, settings, content }, origin] = await Promise.all([
+    loadStorefront(),
+    serverOrigin(),
+  ])
 
   return (
     <Storefront
@@ -32,6 +36,7 @@ export default async function StorefrontRoute({
       initialView={view}
       initialCollection={collection}
       initialProductId={productId}
+      origin={origin}
     />
   )
 }

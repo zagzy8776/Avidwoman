@@ -1,29 +1,42 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { LOCATIONS, locationsByRegion } from '@/lib/data/locations'
-import { SITE_URL } from '@/lib/site'
+import { serverOrigin } from '@/lib/server-origin'
 
-export const dynamic = 'force-static'
+/**
+ * Rendered per request rather than frozen at build time.
+ *
+ * The canonical tag and the schema on this page must name the host that is
+ * actually serving it. Pre-rendering would bake in whatever origin existed at
+ * build time — which is how the site ended up telling Google to look at a domain
+ * that did not exist. The page reads no database, so this costs nothing.
+ */
+export const dynamic = 'force-dynamic'
 
 const HOUSE_WHATSAPP = 'https://wa.me/2347063243954'
 
-export const metadata: Metadata = {
-  title: 'Where We Serve — Bespoke Tailoring Across Nigeria | AVID WOMAN VOGUE',
-  description:
-    'AVID WOMAN VOGUE makes made-to-measure dresses, Ankara, Adire and Aso-Oke in Owerri, Imo State, and delivers to clients across all 36 states of Nigeria. Find your city.',
-  alternates: { canonical: '/locations' },
-  openGraph: {
-    title: 'Where We Serve — AVID WOMAN VOGUE',
+export async function generateMetadata(): Promise<Metadata> {
+  const origin = await serverOrigin()
+
+  return {
+    title: 'Where We Serve — Bespoke Tailoring Across Nigeria | AVID WOMAN VOGUE',
     description:
-      'Hand-cut tailoring from our Owerri studio, delivered across all 36 states of Nigeria.',
-    url: `${SITE_URL}/locations`,
-    siteName: 'AVID WOMAN VOGUE',
-    locale: 'en_NG',
-    type: 'website',
-  },
+      'AVID WOMAN VOGUE makes made-to-measure dresses, Ankara, Adire and Aso-Oke in Owerri, Imo State, and delivers to clients across all 36 states of Nigeria. Find your city.',
+    alternates: { canonical: '/locations' },
+    openGraph: {
+      title: 'Where We Serve — AVID WOMAN VOGUE',
+      description:
+        'Hand-cut tailoring from our Owerri studio, delivered across all 36 states of Nigeria.',
+      url: `${origin}/locations`,
+      siteName: 'AVID WOMAN VOGUE',
+      locale: 'en_NG',
+      type: 'website',
+    },
+  }
 }
 
-export default function LocationsPage() {
+export default async function LocationsPage() {
+  const origin = await serverOrigin()
   const groups = locationsByRegion()
 
   return (
@@ -110,7 +123,7 @@ export default function LocationsPage() {
               '@type': 'ListItem',
               position: index + 1,
               name: `${place.city}, ${place.state}`,
-              url: `${SITE_URL}/locations/${place.slug}`,
+              url: `${origin}/locations/${place.slug}`,
             })),
           }),
         }}
