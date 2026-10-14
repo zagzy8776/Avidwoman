@@ -39,12 +39,40 @@ type View = "home" | "shop" | "product" | "about" | "fitting" | "contact" | "che
 const PAYMENT_WINDOW = "one working day";
 
 /**
+ * The studio's exact map pin, as "lat,lng".
+ *
+ * TODO(pin): paste her Google Maps coordinates here and every "Get directions"
+ * button on the site starts routing to the exact gate instead of to a name
+ * match. To get them: open Google Maps, long-press the exact spot, and copy the
+ * numbers shown (they look like 5.483600, 7.033200).
+ *
+ * WHY THIS MATTERS: searching "Avid Woman Vogue, Owerri" makes Google guess, and
+ * a guess can land the driver on the wrong street or send them down a road that
+ * is not usable. An exact pin cannot be misread, so the customer arrives without
+ * anyone having to explain the state of the road.
+ */
+const STUDIO_PIN = '';
+
+/**
+ * Fallback target, used only until the pin above is filled in.
+ */
+const STUDIO_MAP_QUERY = 'Avid Woman Vogue, Owerri, Imo State, Nigeria';
+
+/**
+ * A landmark for the last stretch, e.g. "Opposite the filling station on
+ * Wetheral Road". Shown as a quiet line under the map so a driver has something
+ * to aim at without the site saying anything about road conditions.
+ */
+const STUDIO_LANDMARK = '';
+
+/** What the map should aim at: the exact pin when we have it, else the name. */
+function mapTarget(): string {
+  return STUDIO_PIN || STUDIO_MAP_QUERY;
+}
+
+/**
  * The house's own contact points — the addresses that never change and must
  * work even before Supabase settings are filled in.
- *
- * TODO(address): the map links search for the business by name in Owerri.
- * Replace `mapQuery` with her exact street address once she confirms it, and
- * every "Get directions" button on the site follows automatically.
  */
 const HOUSE = {
   instagram: "https://www.instagram.com/avidwoman",
@@ -52,15 +80,18 @@ const HOUSE = {
   whatsapp: "https://wa.me/2347063243954",
   phoneDisplay: "0706 324 3954",
   phoneDial: "+2347063243954",
-  /** What the map searches for. Swap in the street address when she gives it. */
-  mapQuery: "Avid Woman Vogue, Owerri, Imo State, Nigeria",
-  /** Opens the shop in Google Maps — customers tap once and get directions. */
+  landmark: STUDIO_LANDMARK,
+  /**
+   * Opens Google Maps with the studio as the destination, in driving mode.
+   * An exact pin routes to the pin; the name search is only a fallback.
+   */
   get directions() {
-    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(this.mapQuery)}`;
+    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapTarget())}&travelmode=driving`;
   },
-  /** The shop pin on its own, for the embedded map panel. */
+  /** The studio pin on its own, for the embedded map panel. */
   get mapEmbed() {
-    return `https://www.google.com/maps?q=${encodeURIComponent(this.mapQuery)}&output=embed`;
+    // z=16 frames the immediate streets, which is the zoom a driver wants.
+    return `https://www.google.com/maps?q=${encodeURIComponent(mapTarget())}&z=16&output=embed`;
   },
 };
 
@@ -2473,6 +2504,9 @@ export default function App({
                   Monday to Saturday · 9:00am to 6:00pm
                   <span>Closed Sundays and public holidays</span>
                 </p>
+                {HOUSE.landmark && (
+                  <p className="fitting-studio-landmark">{HOUSE.landmark}</p>
+                )}
                 <div className="fitting-studio-actions">
                   <a className="gold-button" href={HOUSE.directions} target="_blank" rel="noopener noreferrer">
                     Get directions <span>↗</span>
@@ -2522,9 +2556,18 @@ export default function App({
                   Monday to Saturday · 9:00am to 6:00pm
                   <span>Closed Sundays and public holidays</span>
                 </p>
-                <a className="gold-button contact-directions" href={HOUSE.directions} target="_blank" rel="noopener noreferrer">
-                  Get directions to the shop <span>↗</span>
-                </a>
+                <div className="contact-directions-actions">
+                  <a className="gold-button contact-directions" href={HOUSE.directions} target="_blank" rel="noopener noreferrer">
+                    Get directions to the shop <span>↗</span>
+                  </a>
+                  {/* If a driver gets close and is unsure, one tap reaches the
+                      studio. Cheaper than anyone having to explain the last
+                      stretch in writing. */}
+                  <a className="outline-button" href={`tel:${HOUSE.phoneDial}`}>
+                    Call {HOUSE.phoneDisplay}
+                  </a>
+                </div>
+                {HOUSE.landmark && <p className="contact-landmark">{HOUSE.landmark}</p>}
               </div>
 
               <div className="contact-block">
@@ -2613,9 +2656,12 @@ export default function App({
                 </span>
               </a>
               <p className="contact-map-note">
-                Owerri, Imo State · We also serve Port Harcourt, Aba, Umuahia, Aba and clients
-                across Nigeria by courier.
+                Owerri, Imo State · We also serve Port Harcourt, Aba, Umuahia and clients across
+                Nigeria by courier.
               </p>
+              {HOUSE.landmark && (
+                <p className="contact-map-note contact-landmark">{HOUSE.landmark}</p>
+              )}
             </aside>
           </section>
         </main>

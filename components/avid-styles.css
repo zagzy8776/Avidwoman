@@ -5332,6 +5332,46 @@ a.gold-button {
   padding: 0 34px;
 }
 
+/* Directions + call sit side by side, and stack on a narrow phone. */
+.contact-directions-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.contact-directions-actions .gold-button,
+.contact-directions-actions .outline-button {
+  width: auto;
+  padding: 0 28px;
+}
+
+.contact-directions-actions .contact-directions {
+  margin-top: 0;
+}
+
+/* A quiet landmark line: enough for a driver to aim at, without the site
+   commenting on the road. */
+.contact-landmark {
+  margin-top: 14px;
+  padding-left: 14px;
+  border-left: 2px solid var(--gold);
+  color: var(--ivory);
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.fitting-studio-landmark {
+  margin: 14px 0 0;
+  padding-left: 14px;
+  border-left: 2px solid var(--gold);
+  color: var(--ivory);
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
 .contact-list {
   display: grid;
   gap: 0;
