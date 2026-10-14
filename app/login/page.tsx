@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { signIn } from './actions'
+import PasswordField from '@/components/admin/password-field'
 import { isSupabaseConfigured } from '@/lib/supabase/server'
 
 export const metadata = { title: 'Sign in — AVID WOMAN VOGUE' }
@@ -33,12 +34,18 @@ export default async function LoginPage({
             <input type="hidden" name="next" value={params.next ?? '/admin'} />
             <label>
               Email
-              <input type="email" name="email" required autoComplete="email" />
+              <input
+                type="email"
+                name="email"
+                required
+                autoComplete="email"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                placeholder="you@avidwomanvogue.com"
+              />
             </label>
-            <label>
-              Password
-              <input type="password" name="password" required autoComplete="current-password" />
-            </label>
+            <PasswordField />
             {params.error ? (
               <p style={{ color: 'var(--danger)', fontSize: 10 }}>{params.error}</p>
             ) : null}

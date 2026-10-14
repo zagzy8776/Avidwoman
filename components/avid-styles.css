@@ -5455,6 +5455,37 @@ a.gold-button {
     grid-template-columns: 1fr;
     gap: 46px;
     padding: 56px 6vw 100px;
+
+/* --- Login: password field with a show/hide toggle -------------------
+   A long password typed blind is the usual cause of "invalid login
+   credentials", and the error cannot say which half was wrong. The toggle
+   lets her see what she typed and fix it in place. */
+.password-field {
+  position: relative;
+  display: block;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 74px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  padding: 4px 2px;
+  color: var(--gold);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transform: translateY(-50%);
+}
+
+.password-toggle:hover {
+  opacity: 0.7;
+}
+
   }
 
   .contact-map {
