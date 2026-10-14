@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { headers } from 'next/headers'
 import { LOCATIONS } from '@/lib/data/locations'
 import { listProducts } from '@/lib/data/products'
 import { SITE_URL } from '@/lib/site'
@@ -10,17 +11,41 @@ import { SITE_URL } from '@/lib/site'
 export const dynamic = 'force-dynamic'
 
 /**
- * Dynamic sitemap — every public page plus one entry per active product.
+ * The origin the sitemap should publish.
  *
- * Every URL here is a real route. The storefront is one client component, but
- * /shop, /about, /fitting, /contact and /thrift are thin routes that open it on
- * the right page, so a crawler can reach and index each of them.
+ * Google rejects every entry in a sitemap whose URLs do not sit under the host
+ * that served it — "This url is not allowed for a Sitemap at this location".
+ * Serving from avidwoman.vercel.app while listing avidwomanvogue.com URLs is
+ * exactly that error.
  *
- * The origin comes from NEXT_PUBLIC_SITE_URL (see lib/site.ts), so a Vercel
- * preview and the live domain each publish their own correct URLs.
+ * So the request host wins unless NEXT_PUBLIC_SITE_URL is explicitly set, in
+ * which case the configured domain wins. That means the file is correct today
+ * on the vercel.app domain, and still correct the moment the real domain is
+ * connected and the variable points at it.
+ */
+async function resolveOrigin(): Promise<string> {
+  if (process.env.NEXT_PUBLIC_SITE_URL) return SITE_URL
+
+  try {
+    const requestHeaders = await headers()
+    const host = requestHeaders.get('x-forwarded-host') ?? requestHeaders.get('host')
+    if (host) {
+      const proto = requestHeaders.get('x-forwarded-proto') ?? 'https'
+      return `${proto}://${host}`
+    }
+  } catch {
+    // headers() is not available in every rendering context; fall through.
+  }
+
+  return SITE_URL
+}
+
+/**
+ * Dynamic sitemap — every public page, every active product, and every city we
+ * deliver to. Every URL here is a real route.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = SITE_URL
+  const baseUrl = await resolveOrigin()
   const now = new Date()
 
   // A brief database outage must not 500 the sitemap — Google would read that as
