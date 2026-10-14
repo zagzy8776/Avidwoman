@@ -65,6 +65,20 @@ const HOUSE = {
   },
 };
 
+/**
+ * The two photographs on the home page collection cards.
+ *
+ * These are the house's own shots, kept in /public so the cards do not depend on
+ * whichever product happens to sit first in a collection. Only these two images
+ * are pinned; every other picture on the site still comes from the catalogue.
+ */
+const COLLECTION_CARD_IMAGES = {
+  /** The "Daywear" card (first featured collection). */
+  daywear: '/collection-daywear.jpg',
+  /** The "Evening" card (second featured collection). */
+  evening: '/collection-evening.jpg',
+} as const;
+
 type CartItem = {
   key: string;
   product: Product;
@@ -1650,7 +1664,7 @@ export default function App({
             <div className="collection-grid">
               {featuredCollections[0] && (
                 <article className="collection-card collection-main reveal">
-                  <img src={imageFor(featuredCollections[0])} alt={altFor(featuredCollections[0])} loading="lazy" />
+                  <img src={COLLECTION_CARD_IMAGES.daywear} alt={altFor(featuredCollections[0])} loading="lazy" />
                   <div>
                     <p>01 · {featuredCollections[0]}</p>
                     <h3>Daywear</h3>
@@ -1662,7 +1676,7 @@ export default function App({
               )}
               {featuredCollections[1] && (
                 <article className="collection-card collection-side reveal">
-                  <img src={imageFor(featuredCollections[1])} alt={altFor(featuredCollections[1])} loading="lazy" />
+                  <img src={COLLECTION_CARD_IMAGES.evening} alt={altFor(featuredCollections[1])} loading="lazy" />
                   <div>
                     <p>02 · {featuredCollections[1]}</p>
                     <h3>Evening</h3>
@@ -2403,9 +2417,11 @@ export default function App({
       {view === "contact" && (
         <main className="page-main contact-page">
           <section className="page-hero">
-            <p className="eyebrow">CONTACT</p>
-            <h1>Visit the studio<br /><em>or send a message.</em></h1>
-            <p className="page-hero-note">
+            <p className="eyebrow text-sm text-gray-500 uppercase tracking-wider">CONTACT</p>
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-relaxed mt-8 mb-6">
+              Visit the studio<br /><em>or send a message.</em>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed mt-6">
               We are in Owerri, Imo State, and we deliver anywhere in Nigeria. Call, message or
               email us — and if you are nearby, tap the map and it will bring you straight to the
               door.
