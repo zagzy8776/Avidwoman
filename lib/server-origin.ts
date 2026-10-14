@@ -19,9 +19,8 @@ import { headers } from 'next/headers'
  *   4. The request host      — whatever actually served this response.
  *   5. localhost             — development.
  *
- * Server-only: `next/headers` cannot be imported into a client component. The
- * browser-safe constant lives in lib/site.ts, and the server passes its origin
- * down as a prop where the client needs it.
+ * Server-only: `next/headers` cannot be imported into a client component, so the
+ * storefront reads its origin from the document instead.
  */
 export async function serverOrigin(): Promise<string> {
   if (process.env.NEXT_PUBLIC_SITE_URL) {

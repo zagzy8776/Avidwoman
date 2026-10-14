@@ -18,6 +18,7 @@ import {
 } from "@/lib/data/types";
 import { requestFitting } from "@/app/actions";
 import { money } from "@/lib/format";
+import { mapTarget, STUDIO_LANDMARK } from "@/lib/studio-location";
 import ParticleLogo from "./particle-logo";
 import StudioLighting from "./studio-lighting";
 
@@ -39,40 +40,11 @@ type View = "home" | "shop" | "product" | "about" | "fitting" | "contact" | "che
 const PAYMENT_WINDOW = "one working day";
 
 /**
- * The studio's exact map pin, as "lat,lng".
- *
- * TODO(pin): paste her Google Maps coordinates here and every "Get directions"
- * button on the site starts routing to the exact gate instead of to a name
- * match. To get them: open Google Maps, long-press the exact spot, and copy the
- * numbers shown (they look like 5.483600, 7.033200).
- *
- * WHY THIS MATTERS: searching "Avid Woman Vogue, Owerri" makes Google guess, and
- * a guess can land the driver on the wrong street or send them down a road that
- * is not usable. An exact pin cannot be misread, so the customer arrives without
- * anyone having to explain the state of the road.
- */
-const STUDIO_PIN = '';
-
-/**
- * Fallback target, used only until the pin above is filled in.
- */
-const STUDIO_MAP_QUERY = 'Avid Woman Vogue, Owerri, Imo State, Nigeria';
-
-/**
- * A landmark for the last stretch, e.g. "Opposite the filling station on
- * Wetheral Road". Shown as a quiet line under the map so a driver has something
- * to aim at without the site saying anything about road conditions.
- */
-const STUDIO_LANDMARK = '';
-
-/** What the map should aim at: the exact pin when we have it, else the name. */
-function mapTarget(): string {
-  return STUDIO_PIN || STUDIO_MAP_QUERY;
-}
-
-/**
  * The house's own contact points — the addresses that never change and must
  * work even before Supabase settings are filled in.
+ *
+ * The studio's location itself lives in lib/studio-location.ts, so the map, the
+ * directions link and the structured data all read the same pin.
  */
 const HOUSE = {
   instagram: "https://www.instagram.com/avidwoman",

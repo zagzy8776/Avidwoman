@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Cormorant_Garamond, Manrope } from 'next/font/google'
 import { serverOrigin } from '@/lib/server-origin'
+import { studioCoords } from '@/lib/studio-location'
 import './globals.css'
 
 /** The house's phone number, in the two forms structured data needs. */
@@ -154,7 +155,7 @@ export async function generateMetadata(): Promise<Metadata> {
     canonical: '/',
   },
   openGraph: {
-    title: 'AVID WOMAN VOGUE | Best Fashion House in Nigeria',
+    title: 'AVID WOMAN VOGUE | Best Fashion House & Thrift Store in Owerri, Nigeria',
     description: 'Luxury handmade fashion in Owerri, Imo State. Best tailor for custom Ankara, Adire, Aso-Oke. Shop premium Nigerian fashion online.',
     url: origin,
     siteName: 'AVID WOMAN VOGUE',
@@ -165,14 +166,14 @@ export async function generateMetadata(): Promise<Metadata> {
         url: '/avid-woman-vogue-logo.png',
         width: 1200,
         height: 630,
-        alt: 'AVID WOMAN VOGUE - Best Fashion House in Nigeria',
+        alt: 'AVID WOMAN VOGUE, best fashion house and thrift store in Owerri, Nigeria',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AVID WOMAN VOGUE | Best Fashion House in Nigeria',
-    description: 'Luxury handmade fashion in Lagos, Owerri, Port Harcourt. Best tailor for custom Ankara, Adire, Aso-Oke.',
+    title: 'AVID WOMAN VOGUE | Best Fashion House & Thrift Store in Owerri, Nigeria',
+    description: 'Luxury handmade fashion in Owerri, Imo State. Best tailor for custom Ankara, Adire, Aso-Oke.',
     images: ['/avid-woman-vogue-logo.png'],
     creator: '@avidwoman',
   },
@@ -241,8 +242,9 @@ export default async function RootLayout({
               },
               geo: {
                 '@type': 'GeoCoordinates',
-                latitude: '5.4836',
-                longitude: '7.0332',
+                // Read from the same pin the map uses, so Google never sees the
+                // schema and the map pointing at two different places.
+                ...studioCoords(),
               },
               areaServed: [
                 { '@type': 'City', name: 'Owerri' },
