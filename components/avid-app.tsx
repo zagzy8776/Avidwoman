@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import {
+  COLLECTIONS,
   CONTENT_DEFAULTS,
   FITTING_SERVICES,
   FLAT_SHIPPING,
@@ -141,7 +142,7 @@ function productDescription(product: Product): string {
   if (product.description?.trim()) return product.description.trim();
   const cloth = product.fabric ? product.fabric.toLowerCase() : "the house cloth";
   const made = product.origin ? ` Made in ${product.origin}.` : "";
-  return `Hand-cut in ${cloth} and finished in our Lagos studio, ${product.name} is part of the ${product.collection} collection.${made}`;
+  return `Hand-cut in ${cloth} and finished in our Owerri studio, ${product.name} is part of the ${product.collection} collection.${made}`;
 }
 
 /** A colour is orderable when it has stock (photography is a separate gate). */
@@ -237,7 +238,7 @@ function productFacts(product: Product, colorName: string, sizes: string[]) {
     },
     {
       title: "Delivery & returns",
-      body: "Made and dispatched from the atelier within five working days, with complimentary delivery. If the fit is not right, return it unworn within 14 days — or book a free alteration and keep the piece.",
+      body: "Made and dispatched from our Owerri studio within five working days, with complimentary delivery. If the fit is not right, return it unworn within 14 days — or book a free adjustment and keep the piece.",
     },
   ];
 }
@@ -427,7 +428,7 @@ function VariantSelector({
           {awaitingPhoto.length === 1
             ? `${awaitingPhoto[0].colorName} is`
             : `${awaitingPhoto.map((variant) => variant.colorName).join(", ")} are`}{" "}
-          not photographed yet, so it cannot be selected here. Contact the atelier and we will send
+          not photographed yet, so it cannot be selected here. Contact us and we will send
           a photograph of the actual cloth.
         </p>
       )}
@@ -845,7 +846,7 @@ function CheckoutView({
     } catch {
       setStatus("idle");
       setMessage(
-        "We could not reach the atelier just now. Your bag is safe — try again, or send it by email.",
+        "We could not reach the studio just now. Your bag is safe — try again, or send it by email.",
       );
     }
   }
@@ -956,8 +957,36 @@ function CheckoutView({
               cancelled automatically.
             </p>
           </div>
-        </section>
-      </main>
+          </section>
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Product",
+              "name": activeProduct.name,
+              "image": [activeProduct.image, ...galleryImages].filter(Boolean),
+              "description": productDescription(activeProduct),
+              ...(activeVariant?.sku || activeProduct.sku ? { "sku": activeVariant?.sku || activeProduct.sku } : {}),
+              "brand": {
+                "@type": "Thing",
+                "name": "AVID WOMAN VOGUE"
+              },
+              "offers": {
+                "@type": "Offer",
+                "url": `${SITE_URL}/?product=${activeProduct.id}`,
+                "priceCurrency": activeProduct.currency,
+                "price": String(unitPrice(activeProduct, activeVariant)),
+                "availability": (activeVariant?.stock ?? activeProduct.inventory) > 0 
+                  ? "https://schema.org/InStock" 
+                  : "https://schema.org/PreOrder"
+              },
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": reviewSummary.average,
+                "reviewCount": reviewSummary.count
+              }
+            }, null, 2)}
+          </script>
+        </main>
     );
   }
 
@@ -1009,7 +1038,7 @@ function CheckoutView({
                 />
               </label>
               <label className="checkout-field checkout-field-wide">
-                <span>Note for the atelier (optional)</span>
+                <span>Note for the studio (optional)</span>
                 <textarea
                   name="note"
                   rows={2}
@@ -1123,7 +1152,7 @@ function CheckoutView({
           icon card. */}
       <div className="service-note checkout-trust">
         <span>COMPLIMENTARY DELIVERY</span>
-        <span>HAND-FINISHED IN THE ATELIER</span>
+        <span>HAND-FINISHED IN OWERRI</span>
         <span>PRIVATE CLIENT SUPPORT</span>
       </div>
     </main>
@@ -1401,8 +1430,20 @@ export default function App({
   }, []);
 
   /** Collection names that actually exist in the catalogue, not a fixed list. */
+  /**
+   * Shop filter list. The canonical collections come first so a collection the
+   * house offers (THRIFT, say) is still listed — and still reachable from the
+   * /thrift route — before a single piece has been posted to it. Any extra
+   * collection already on a product is merged in, so a rename in the admin
+   * console can never hide a piece.
+   */
   const collections = useMemo(
-    () => ["All", ...Array.from(new Set(products.map((product) => product.collection)))],
+    () => [
+      "All",
+      ...Array.from(
+        new Set([...COLLECTIONS, ...products.map((product) => product.collection)]),
+      ),
+    ],
     [products],
   );
 
@@ -1621,7 +1662,7 @@ export default function App({
               ))}
             </div>
             <p className="gallery-hint">
-              Every piece photographed at our Lagos studio. Tap any image to shop.
+              Every piece photographed at our Owerri studio. Tap any image to shop.
             </p>
             {/* Mobile-only CTA so customers on phones don't scroll past without a way in */}
             <div className="lookbook-cta">
@@ -1821,11 +1862,19 @@ export default function App({
               </div>
               {filteredProducts.length === 0 && (
                 <div className="shop-empty">
-                  <p>Nothing here yet.</p>
+                  <p>
+                    {savedOnly
+                      ? "Nothing saved yet."
+                      : shopFilter !== "All"
+                        ? `Nothing in ${shopFilter} just yet.`
+                        : "Nothing matches this size."}
+                  </p>
                   <span>
                     {savedOnly
-                      ? "No saved pieces yet. Tap the heart on a piece to keep it here."
-                      : "No pieces match this collection and size together. Try another combination, or contact the atelier — most pieces can be made to order."}
+                      ? "Tap the heart on a piece to keep it here."
+                      : shopFilter !== "All"
+                        ? "New pieces are added in small runs, so check back shortly — or browse everything we have ready now."
+                        : "Try another size, or contact us — most pieces can be cut to your measurements."}
                   </span>
                   <button className="outline-button" onClick={() => goShop()}>Show everything</button>
                 </div>
@@ -2009,7 +2058,7 @@ export default function App({
               </div>
               <div className="service-note">
                 <span>FREE DELIVERY</span>
-                <span>HANDMADE IN LAGOS</span>
+                <span>HANDMADE IN OWERRI</span>
                 <span>FREE ALTERATIONS</span>
               </div>
             </div>
@@ -2101,7 +2150,7 @@ export default function App({
           <section className="about-statement section reveal">
             <span>HOW WE STARTED · 01</span>
             <h2>
-              AVID WOMAN VOGUE is a Lagos fashion house built to make clothes that actually fit.
+              AVID WOMAN VOGUE is an Owerri fashion house built to make clothes that actually fit.
               We cut each piece to your body first, and to a size label second —{" "}
               <em>and every order comes with a personal fitting session.</em>
             </h2>
@@ -2112,7 +2161,7 @@ export default function App({
               <p className="eyebrow">HOW WE WORK</p>
               <h2>Every piece, made with care.</h2>
               <p>
-                Each dress is cut by hand in our Lagos studio, tried on a real body and adjusted
+                Each dress is cut by hand in our Owerri studio, tried on a real body and adjusted
                 before it is finished. We only use fabrics chosen for how they move and wear —
                 nothing is added for decoration alone. We make small numbers so every order gets
                 full attention, and nothing leaves until the fit is right. If it is not right,
@@ -2155,7 +2204,7 @@ export default function App({
             <ParticleLogo compact />
             <div>
               <p>AVID WOMAN VOGUE</p>
-              <h2>A Lagos fashion house.<br />Made by hand.</h2>
+              <h2>An Owerri fashion house.<br />Made by hand.</h2>
             </div>
           </section>
         </main>
@@ -2475,7 +2524,7 @@ export default function App({
                 contactEmail,
               )}
             >
-              Or send your bag to the atelier
+              Or send your bag to the studio
             </a>
           </>
         ) : (
@@ -2597,7 +2646,7 @@ export default function App({
             </div>
             {query.trim() && searchResults.length === 0 && (
               <p className="search-empty">
-                Nothing matches “{query.trim()}”. Try a collection or a fabric, or contact the atelier
+                Nothing matches “{query.trim()}”. Try a collection or a fabric, or contact us
                 — most pieces can be made to order.
               </p>
             )}
@@ -2718,7 +2767,7 @@ function Footer({
         {/* The admin console is deliberately NOT linked from here. Staff reach it
             by typing /admin directly; a customer browsing the footer never sees
             a door into the back office. */}
-        <span>Lagos · Owerri · Port Harcourt</span>
+        <span>Owerri · Imo State · Nigeria</span>
       </div>
     </footer>
   );
