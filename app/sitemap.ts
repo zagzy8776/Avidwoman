@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { LOCATIONS } from '@/lib/data/locations'
 import { listProducts } from '@/lib/data/products'
 import { SITE_URL } from '@/lib/site'
 
@@ -49,5 +50,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  return [...staticPages, ...productPages]
+  // Service-area pages, one per city we deliver to. Each carries its own
+  // delivery window, measuring route and local note, so they are genuinely
+  // different pages rather than one template with the city swapped.
+  const locationPages: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/locations`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    ...LOCATIONS.map((place) => ({
+      url: `${baseUrl}/locations/${place.slug}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
+  ]
+
+  return [...staticPages, ...productPages, ...locationPages]
 }

@@ -2818,6 +2818,7 @@ function Footer({
             <button onClick={() => navigate("contact")}>Contact us</button>
             <button onClick={() => navigate("fitting")}>Book an appointment</button>
             <button onClick={onSizeGuide}>Size guide</button>
+            <Link href="/locations">Where we serve</Link>
           </div>
           <div>
             <p>Trade</p>

@@ -5482,6 +5482,242 @@ a.gold-button {
   transform: translateY(-50%);
 }
 
+/* ==================================================================
+   LOCATION PAGES — /locations and /locations/[city]
+
+   These are service-area pages, so they share the house palette and type
+   rather than looking like a separate site. Everything here is visible
+   content: no hidden keywords, no text behind the page.
+   ================================================================== */
+
+.location-page {
+  background: var(--black);
+}
+
+.location-hero {
+  padding-bottom: 40px;
+}
+
+.location-body {
+  display: grid;
+  gap: 56px;
+  padding: 40px 6vw 140px;
+  max-width: 1180px;
+}
+
+/* --- The local note: the paragraph that makes this page not a template --- */
+.location-note {
+  padding: 34px 32px;
+  border-left: 2px solid var(--gold);
+  background: var(--charcoal);
+}
+
+.location-note-text {
+  margin: 0;
+  color: var(--ivory);
+  font-family: var(--serif);
+  font-size: clamp(19px, 1.7vw, 24px);
+  line-height: 1.6;
+}
+
+/* --- At-a-glance facts --- */
+.location-facts {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.location-facts > div {
+  display: grid;
+  gap: 8px;
+  padding: 28px 26px;
+  background: var(--black);
+}
+
+.location-facts span {
+  color: var(--gold);
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.location-facts b {
+  font-family: var(--serif);
+  font-size: clamp(17px, 1.5vw, 21px);
+  font-weight: 400;
+}
+
+.location-facts small {
+  color: var(--brand-muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* --- FAQ: real questions, answers visible on the page --- */
+.location-faq dl {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.location-faq dl > div {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.location-faq dt {
+  margin-bottom: 10px;
+  font-family: var(--serif);
+  font-size: clamp(18px, 1.6vw, 22px);
+  line-height: 1.35;
+}
+
+.location-faq dd {
+  margin: 0;
+  max-width: 760px;
+  color: var(--brand-muted);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+/* --- Call to action --- */
+.location-cta {
+  padding: 40px 34px;
+  border: 1px solid var(--line-gold);
+}
+
+.location-cta h2 {
+  margin: 0 0 14px;
+  font-family: var(--serif);
+  font-size: clamp(30px, 3.4vw, 46px);
+  font-weight: 400;
+}
+
+.location-cta p {
+  margin: 0 0 26px;
+  max-width: 620px;
+  color: var(--brand-muted);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.location-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.location-cta-actions .gold-button,
+.location-cta-actions .outline-button {
+  width: auto;
+  padding: 0 30px;
+}
+
+/* --- The index: cities grouped by region --- */
+.location-region ul {
+  display: grid;
+  gap: 1px;
+  margin: 18px 0 0;
+  padding: 0;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  list-style: none;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.location-region a {
+  display: grid;
+  gap: 4px;
+  padding: 18px 20px;
+  background: var(--black);
+  text-decoration: none;
+  transition: background 0.25s ease;
+}
+
+.location-region a:hover {
+  background: var(--charcoal-2);
+}
+
+.location-region strong {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.location-region span {
+  color: var(--brand-muted);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.location-region small {
+  color: var(--gold);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* --- Cross-links from a city page --- */
+.location-elsewhere div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin-top: 16px;
+}
+
+.location-elsewhere a {
+  color: var(--brand-muted);
+  font-size: 12px;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.location-elsewhere a:hover {
+  color: var(--gold);
+}
+
+/* Light theme: the shared surfaces already flip, so only the two panels
+   that hardcode a dark ground need a hand. */
+[data-theme="light"] .location-note,
+[data-theme="light"] .location-facts > div,
+[data-theme="light"] .location-region a {
+  background: var(--charcoal);
+}
+
+@media (max-width: 900px) {
+  .location-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .location-body {
+    gap: 40px;
+    padding: 30px 6vw 100px;
+  }
+}
+
+@media (max-width: 520px) {
+  .location-note,
+  .location-cta {
+    padding: 24px 20px;
+  }
+
+  .location-cta-actions {
+    flex-direction: column;
+  }
+
+  .location-cta-actions .gold-button,
+  .location-cta-actions .outline-button {
+    width: 100%;
+  }
+
+  .location-region ul {
+    grid-template-columns: 1fr;
+  }
+}
+
+
 .password-toggle:hover {
   opacity: 0.7;
 }
