@@ -11,10 +11,13 @@ import { loadStorefront } from '@/lib/storefront'
 export default async function StorefrontRoute({
   view,
   collection,
+  productId,
 }: {
-  view: 'home' | 'shop' | 'about' | 'fitting' | 'contact'
+  view: 'home' | 'shop' | 'product' | 'about' | 'fitting' | 'contact'
   /** Opens the shop on a single collection, e.g. THRIFT. */
   collection?: string
+  /** Opens a specific piece, used by /product/[id]. */
+  productId?: number
 }) {
   const { products, lookbook, settings, content } = await loadStorefront()
 
@@ -28,6 +31,7 @@ export default async function StorefrontRoute({
       content={content}
       initialView={view}
       initialCollection={collection}
+      initialProductId={productId}
     />
   )
 }

@@ -327,15 +327,15 @@ create index if not exists products_archived_idx on public.products (archived);
 insert into public.site_content (key, label, eyebrow, title, body, cta_label, cta_href)
 values
   ('home.hero', 'Homepage â€” hero', 'AVID WOMAN VOGUE Â· LAGOS FASHION HOUSE', 'Best Fashion House,
-*in Owerri.*', 'Premium handmade clothes cut and finished by hand in our Lagos studio, in black, ivory and gold. Every run is limited, and every piece is made to wear for years, not one season.', 'Shop the collection', 'shop'),
+*in Owerri.*', 'Premium handmade clothes cut and finished by hand in our Owerri studio, in black, ivory and gold. Every run is limited, and every piece is made to wear for years, not one season.', 'Shop the collection', 'shop'),
   ('home.house', 'Homepage â€” the house', 'THE FASHION HOUSE', 'Well-made clothes,
-*made to last.*', 'We are a Lagos fashion house, not a fast-fashion shop. Every piece is cut and sewn by hand, in small numbers, and checked one by one before it leaves us.', 'Our story', 'about'),
+*made to last.*', 'We are an Owerri fashion house, not a fast-fashion shop. Every piece is cut and sewn by hand, in small numbers, and checked one by one before it leaves us.', 'Our story', 'about'),
   ('home.fittings', 'Homepage â€” fittings & alterations', 'APPOINTMENTS & FITTINGS', 'Your size,
-*your fit.*', 'Book a private fitting at our Lagos studio, or send your measurements from anywhere in Nigeria. We adjust the length, fix the fit and finish the piece on you.', 'Book an appointment', 'fitting'),
+*your fit.*', 'Book a private fitting at our Owerri studio, or send your measurements from anywhere in Nigeria. We adjust the length, fix the fit and finish the piece on you.', 'Book an appointment', 'fitting'),
   ('home.newsletter', 'Homepage â€” mailing list', 'THE LIST', 'The mailing list.', 'One email when new pieces, restocks and limited runs are released. Nothing else.', '', ''),
   ('shop.heritage', 'Shop â€” heritage fabrics', 'HERITAGE FABRICS Â· ANKARA & ADIRE', 'Ankara, adire and aso-oke,
 *cut to our own patterns.*', 'Hand-dyed adire and carefully sourced ankara, cut into the same shapes as the main collection. Each fabric length is chosen by hand.', 'Shop the heritage fabrics', 'shop-grid'),
-  ('footer.about', 'Footer â€” house line', '', 'AVID WOMAN VOGUE', 'A Lagos fashion house. Small runs, handmade with care.', '', '')
+  ('footer.about', 'Footer â€” house line', '', 'AVID WOMAN VOGUE', 'An Owerri fashion house. Small runs, handmade with care.', '', '')
 on conflict (key) do nothing;
 
 

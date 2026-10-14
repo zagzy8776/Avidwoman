@@ -382,9 +382,9 @@ export type ContentKey = (typeof CONTENT_BLOCK_KEYS)[number]['key']
  */
 export const CONTENT_DEFAULTS: Record<ContentKey, Omit<ContentBlock, 'key' | 'label'>> = {
   'home.hero': {
-    eyebrow: 'AVID WOMAN VOGUE · LAGOS FASHION HOUSE',
+    eyebrow: 'AVID WOMAN VOGUE · OWERRI FASHION HOUSE',
     title: 'Best Fashion House\n*in Owerri.*',
-    body: 'Premium handmade clothes cut and finished by hand in our Lagos studio, in black, ivory and gold. Every run is limited, and every piece is made to wear for years, not one season — made for your needs, your body, your life.',
+    body: 'Premium handmade clothes cut and finished by hand in our Owerri studio, in black, ivory and gold. Every run is limited, and every piece is made to wear for years, not one season — made for your needs, your body, your life.',
     ctaLabel: 'Shop the collection',
     ctaHref: 'shop',
     image: '',
@@ -393,7 +393,7 @@ export const CONTENT_DEFAULTS: Record<ContentKey, Omit<ContentBlock, 'key' | 'la
   'home.house': {
     eyebrow: 'THE FASHION HOUSE',
     title: 'Well-made clothes.\n*Made to last.*',
-    body: 'We are a Lagos fashion house, not a fast-fashion shop. Every piece is cut and sewn by hand, in small numbers, and checked one by one before it leaves us. We pick fabrics for how they feel and how long they last — so you can wear them for years.',
+    body: 'We are an Owerri fashion house, not a fast-fashion shop. Every piece is cut and sewn by hand, in small numbers, and checked one by one before it leaves us. We pick fabrics for how they feel and how long they last — so you can wear them for years.',
     ctaLabel: 'Our story',
     ctaHref: 'about',
     image: '',
@@ -402,7 +402,7 @@ export const CONTENT_DEFAULTS: Record<ContentKey, Omit<ContentBlock, 'key' | 'la
   'home.fittings': {
     eyebrow: 'APPOINTMENTS & FITTINGS',
     title: 'Your size,\n*your fit.*',
-    body: 'Book a private fitting at our Lagos studio, or send your measurements from anywhere in Nigeria. We adjust the length, fix the fit and finish the piece on you. Already own one of our pieces? Bring it in — we quote for every adjustment before we start.',
+    body: 'Book a private fitting at our Owerri studio, or send your measurements from anywhere in Nigeria. We adjust the length, fix the fit and finish the piece on you. Already own one of our pieces? Bring it in — we quote for every adjustment before we start.',
     ctaLabel: 'Book an appointment',
     ctaHref: 'fitting',
     image: '',
@@ -429,7 +429,7 @@ export const CONTENT_DEFAULTS: Record<ContentKey, Omit<ContentBlock, 'key' | 'la
   'footer.about': {
     eyebrow: '',
     title: 'AVID WOMAN VOGUE',
-    body: 'A Lagos fashion house. Small runs, handmade with care — with a personal fitting on every order.',
+    body: 'An Owerri fashion house. Small runs, handmade with care — with a personal fitting on every order.',
     ctaLabel: '',
     ctaHref: '',
     image: '',

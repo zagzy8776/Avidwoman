@@ -22,7 +22,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SITE_URL
   const now = new Date()
 
-  const products = await listProducts()
+  // A brief database outage must not 500 the sitemap — Google would read that as
+  // the whole site being gone. Without the catalogue the static pages are still
+  // listed, and the products return on the next crawl.
+  const products = await listProducts().catch((error) => {
+    console.warn('sitemap: could not read the catalogue, listing pages only.', error)
+    return []
+  })
   const activeProducts = products.filter((p) => !p.archived)
 
   const staticPages: MetadataRoute.Sitemap = [
@@ -34,9 +40,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/contact`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
   ]
 
-  // Product pages. `?product=<id>` is the storefront's deep link to a piece.
+  // Product pages. Each piece has a real /product/[id] route, so the schema and
+  // title are in the HTML a crawler reads rather than behind client-side state.
   const productPages: MetadataRoute.Sitemap = activeProducts.map((product) => ({
-    url: `${baseUrl}/?product=${product.id}`,
+    url: `${baseUrl}/product/${product.id}`,
     lastModified: new Date(product.createdAt),
     changeFrequency: 'weekly',
     priority: 0.7,

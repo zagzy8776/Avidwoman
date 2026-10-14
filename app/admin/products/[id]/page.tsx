@@ -41,9 +41,9 @@ export default async function EditProductPage({
           <h1>{product.name}</h1>
         </div>
         <div className="admin-header-actions">
-          {/* The storefront opens a piece on ?product=id, so the owner can look
-              at the real page rather than imagining it. */}
-          <Link className="text-link" href={`/?product=${product.id}`} target="_blank">
+          {/* Each piece has its own /product/[id] route, so the owner opens the
+              real, shareable page rather than a client-side view. */}
+          <Link className="text-link" href={`/product/${product.id}`} target="_blank">
             View on site ↗
           </Link>
           <Link className="text-link" href="/admin/products">

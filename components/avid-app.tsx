@@ -18,6 +18,7 @@ import {
 } from "@/lib/data/types";
 import { requestFitting } from "@/app/actions";
 import { money } from "@/lib/format";
+import { SITE_URL } from "@/lib/site";
 import ParticleLogo from "./particle-logo";
 import StudioLighting from "./studio-lighting";
 
@@ -958,34 +959,6 @@ function CheckoutView({
             </p>
           </div>
           </section>
-          <script type="application/ld+json">
-            {JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Product",
-              "name": activeProduct.name,
-              "image": [activeProduct.image, ...galleryImages].filter(Boolean),
-              "description": productDescription(activeProduct),
-              ...(activeVariant?.sku || activeProduct.sku ? { "sku": activeVariant?.sku || activeProduct.sku } : {}),
-              "brand": {
-                "@type": "Thing",
-                "name": "AVID WOMAN VOGUE"
-              },
-              "offers": {
-                "@type": "Offer",
-                "url": `${SITE_URL}/?product=${activeProduct.id}`,
-                "priceCurrency": activeProduct.currency,
-                "price": String(unitPrice(activeProduct, activeVariant)),
-                "availability": (activeVariant?.stock ?? activeProduct.inventory) > 0 
-                  ? "https://schema.org/InStock" 
-                  : "https://schema.org/PreOrder"
-              },
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": reviewSummary.average,
-                "reviewCount": reviewSummary.count
-              }
-            }, null, 2)}
-          </script>
         </main>
     );
   }
@@ -1168,6 +1141,7 @@ export default function App({
   content = CONTENT_DEFAULTS,
   initialView = "home",
   initialCollection,
+  initialProductId,
 }: {
   products?: Product[];
   lookbook?: LookbookFrame[];
@@ -1194,6 +1168,11 @@ export default function App({
    * instead of the whole catalogue.
    */
   initialCollection?: string;
+  /**
+   * The piece a /product/[id] route should open on, so the product page is
+   * server-rendered with its own structured data.
+   */
+  initialProductId?: number;
 }) {
   /** One block, resolved against the shipped defaults. */
   const block = (key: ContentKey): ContentBlock => ({
@@ -1238,9 +1217,23 @@ export default function App({
   const cartCount = cart.reduce((total, item) => total + item.qty, 0);
   const cartSubtotal = cart.reduce((total, item) => total + unitPrice(item.product, item.variant) * item.qty, 0);
   const [quickProduct, setQuickProduct] = useState<Product | null>(null);
-  const [activeProduct, setActiveProduct] = useState(products[0]);
+
+  /**
+   * The piece the product page opens on. A dedicated /product/[id] route passes
+   * `initialProductId`, so that page is server-rendered with its own Product
+   * structured data in the HTML — which is what a crawler reads. Falling back to
+   * the first piece keeps the in-app deep link (?product=id) working.
+   */
+  const openingProduct = useMemo(
+    () => (initialProductId ? products.find((p) => p.id === initialProductId) : undefined) ?? products[0],
+    // Only the first render's value matters; later product changes are state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  const [activeProduct, setActiveProduct] = useState(openingProduct);
   const [activeVariant, setActiveVariant] = useState<ProductVariant | undefined>(() =>
-    products[0] ? defaultVariant(products[0]) : undefined,
+    openingProduct ? defaultVariant(openingProduct) : undefined,
   );
   const [quickVariant, setQuickVariant] = useState<ProductVariant | undefined>(undefined);
   const [galleryIndex, setGalleryIndex] = useState(0);
@@ -1267,10 +1260,37 @@ export default function App({
   const reviewSummary = placeholderReviewSummary(activeProduct?.id ?? 0);
   const reviews = placeholderReviews(activeProduct?.id ?? 0);
 
+  /**
+   * View -> public URL. Each of these is a real route (see app/shop, app/about,
+   * app/fitting, app/contact), so moving between pages keeps the address bar
+   * honest and a customer can copy or share the link they are looking at.
+   */
+  const pathForView = (next: View): string => {
+    switch (next) {
+      case "shop":
+        return "/shop";
+      case "about":
+        return "/about";
+      case "fitting":
+        return "/fitting";
+      case "contact":
+        return "/contact";
+      case "home":
+        return "/";
+      default:
+        return "";
+    }
+  };
+
   const navigate = (next: View) => {
     setView(next);
     setMenuOpen(false);
     setSearchOpen(false);
+    // Products and checkout manage their own URL below.
+    const path = pathForView(next);
+    if (path && typeof window !== "undefined" && window.location.pathname !== path) {
+      window.history.pushState({ view: next }, "", path);
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -1339,6 +1359,36 @@ export default function App({
   }, [products]);
 
   /**
+   * Keep the browser's back and forward buttons working now that navigating
+   * pushes a real path. Without this, pressing back would change the address bar
+   * while the page stayed put.
+   */
+  useEffect(() => {
+    const onPop = () => {
+      const path = window.location.pathname;
+      if (path.startsWith("/product/")) {
+        const id = Number(path.split("/")[2]);
+        const product = products.find((candidate) => candidate.id === id);
+        if (product) {
+          setActiveProduct(product);
+          setActiveVariant(defaultVariant(product));
+          setGalleryIndex(0);
+          setView("product");
+          return;
+        }
+      }
+      if (path === "/shop") setView("shop");
+      else if (path === "/about") setView("about");
+      else if (path === "/fitting") setView("fitting");
+      else if (path === "/contact") setView("contact");
+      else setView("home");
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+    // Re-bound when the catalogue changes so the lookup is never stale.
+  }, [products]);
+
+  /**
    * Preload each colour's own photograph as soon as the piece is opened, so a
    * swatch swap is instant instead of leaving the previous colour on screen
    * while the browser fetches the next one. Only images[0] is preloaded: the
@@ -1379,6 +1429,12 @@ export default function App({
     // Reset size to the first in-stock size of the chosen colour.
     const sizes = chosen?.sizes.length ? chosen.sizes : ["XS", "S", "M", "L", "XL"];
     setSelectedSize(sizes.includes("M") ? "M" : (sizes[0] ?? "M"));
+    // Give the piece its own address so it can be copied, shared or bookmarked.
+    // The route is server-rendered, so opening that link cold also works.
+    if (typeof window !== "undefined") {
+      const path = `/product/${product.id}`;
+      if (window.location.pathname !== path) window.history.pushState({ productId: product.id }, "", path);
+    }
     navigate("product");
   };
 
@@ -2135,6 +2191,44 @@ export default function App({
               ))}
             </div>
           </section>
+
+          {/* Product structured data for Google rich results.
+              It lives HERE, inside the product view, because every value it
+              reads (the active product, its gallery, its price) only exists on
+              this screen. Placed anywhere else it reads undefined and takes the
+              page down with it.
+              dangerouslySetInnerHTML is required: React escapes text children,
+              which would corrupt the JSON. */}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Product",
+                name: activeProduct.name,
+                image: [activeProduct.image, ...galleryImages].filter(Boolean),
+                description: productDescription(activeProduct),
+                ...(activeVariant?.sku || activeProduct.sku
+                  ? { sku: activeVariant?.sku || activeProduct.sku }
+                  : {}),
+                brand: { "@type": "Brand", name: "AVID WOMAN VOGUE" },
+                category: activeProduct.collection,
+                material: activeProduct.fabric ?? undefined,
+                offers: {
+                  "@type": "Offer",
+                  url: `${SITE_URL}/product/${activeProduct.id}`,
+                  priceCurrency: activeProduct.currency,
+                  price: String(unitPrice(activeProduct, activeVariant)),
+                  itemCondition: "https://schema.org/NewCondition",
+                  availability:
+                    (activeVariant?.stock ?? activeProduct.inventory) > 0
+                      ? "https://schema.org/InStock"
+                      : "https://schema.org/PreOrder",
+                  seller: { "@type": "Organization", name: "AVID WOMAN VOGUE" },
+                },
+              }),
+            }}
+          />
         </main>
       )}
 
