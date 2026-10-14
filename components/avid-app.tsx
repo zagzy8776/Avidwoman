@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import {
   COLLECTIONS,
   CONTENT_DEFAULTS,
@@ -77,6 +77,15 @@ const COLLECTION_CARD_IMAGES = {
   /** The "Evening" card (second featured collection). */
   evening: '/collection-evening.jpg',
 } as const;
+
+/**
+ * The studio film shown in "The Studio" panel on the home page.
+ *
+ * Kept in /public rather than a CDN so it streams from the same origin as the
+ * page. It is muted and inline so a phone will autoplay it without a tap, and it
+ * pauses for anyone who has asked their system for reduced motion.
+ */
+const STUDIO_FILM = '/studio-film.mp4';
 
 type CartItem = {
   key: string;
@@ -1264,6 +1273,61 @@ export default function App({
   const [shopFilter, setShopFilter] = useState(initialCollection ?? "All");
   const [sort, setSort] = useState("Featured");
 
+  /** The studio film element, so reduced-motion preferences can pause it. */
+  const studioFilmRef = useRef<HTMLVideoElement | null>(null);
+
+  /**
+   * The studio film: load it only when it is about to be seen, play it only
+   * while it is on screen, and pause it for anyone who has asked for reduced
+   * motion.
+   *
+   * WHY: the clip is ~3 MB. Downloading that on every home page visit is a real
+   * cost on Nigerian mobile data, and a looping video left playing while the
+   * reader scrolls elsewhere burns battery for nothing. The stylesheet already
+   * collapses CSS animation for reduced-motion users, but CSS cannot pause a
+   * <video>, so that part has to be done here.
+   */
+  useEffect(() => {
+    const film = studioFilmRef.current;
+    if (!film) return;
+    if (typeof window === "undefined") return;
+
+    const motionQuery =
+      typeof window.matchMedia === "function"
+        ? window.matchMedia("(prefers-reduced-motion: reduce)")
+        : null;
+    const reduceMotion = () => Boolean(motionQuery?.matches);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !reduceMotion()) {
+            // play() rejects if the browser blocks autoplay — fine, the poster
+            // simply stays on screen.
+            void film.play().catch(() => {});
+          } else {
+            film.pause();
+          }
+        });
+      },
+      // Start a little before it arrives so it is already moving on screen.
+      { rootMargin: "200px 0px", threshold: 0.15 },
+    );
+
+    observer.observe(film);
+
+    // If the preference flips while the page is open, honour it immediately.
+    const onMotionChange = () => {
+      if (reduceMotion()) film.pause();
+    };
+    motionQuery?.addEventListener("change", onMotionChange);
+
+    return () => {
+      observer.disconnect();
+      motionQuery?.removeEventListener("change", onMotionChange);
+    };
+  }, []);
+
   /** Gallery for the current product/colour: variant images, else the product shot. */
   const galleryImages = useMemo(() => {
     const fromVariant = activeVariant?.images ?? [];
@@ -1707,10 +1771,21 @@ export default function App({
               </button>
             </div>
             <div className="manifesto-image reveal">
-              <img
-                src={block("home.house").image || products[2]?.image || ""}
-                alt={block("home.house").alt || products[2]?.alt || ""}
-                loading="lazy"
+              {/* The studio film. muted + playsInline is what lets a phone
+                  autoplay it without a tap. `preload="none"` keeps the ~3 MB
+                  off the wire until the panel is actually near the viewport —
+                  the effect above starts it. `poster` shows a still frame until
+                  then, and doubles as the fallback if the video never loads. */}
+              <video
+                ref={studioFilmRef}
+                className="manifesto-film"
+                src={STUDIO_FILM}
+                poster={block("home.house").image || products[2]?.image || ""}
+                muted
+                loop
+                playsInline
+                preload="none"
+                aria-label="Inside the AVID WOMAN VOGUE studio in Owerri"
               />
               <span>THE STUDIO</span>
             </div>

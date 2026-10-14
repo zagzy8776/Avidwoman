@@ -795,13 +795,40 @@ h2 em {
   transform: translate(16px, -16px);
 }
 
-.manifesto-image img {
+.manifesto-image img,
+.manifesto-image .manifesto-film {
   position: relative;
   z-index: 3;
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
+}
+
+/* The studio film fills the same box the photograph used, so the gold offset
+   frame, the "THE STUDIO" tab and the scroll reveal all keep working untouched.
+   `object-position: center 30%` favours the upper part of a portrait clip, which
+   is where the subject sits in a phone-filmed vertical frame — the default
+   centre crop cuts heads off. */
+.manifesto-image .manifesto-film {
+  object-position: center 30%;
+  background: var(--charcoal);
+}
+
+/* Never show the browser's own play/pause chrome over the film: it is
+   decorative, muted and looped, and the controls read as a bug. */
+.manifesto-image .manifesto-film::-webkit-media-controls {
+  display: none !important;
+}
+
+/* The panel is a shorter, wider box on a phone than on desktop, so the crop has
+   to favour a different part of a vertical clip or the subject drifts out of
+   frame. Both values are the only thing to tune if the framing looks off. */
+@media (max-width: 780px) {
+  .manifesto-image .manifesto-film {
+    object-position: center 22%;
+  }
 }
 
 .manifesto-image span {
