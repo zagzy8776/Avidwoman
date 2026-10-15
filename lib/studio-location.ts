@@ -25,11 +25,40 @@
  * street. A coordinate pair cannot be misread.
  */
 
-/** The exact studio pin as "lat,lng". Empty until it is confirmed. */
-export const STUDIO_PIN = ''
+/**
+ * The exact studio pin as "lat,lng". Confirmed by the house.
+ *
+ * Reverse geocoding puts this on a tertiary road in Mbieri, Mbaitoli, Imo State,
+ * which is the Owerri metropolitan area. Marketing copy still says Owerri,
+ * because that is what customers search for; the pin itself is exact.
+ */
+export const STUDIO_PIN = '5.538912528651021,7.057267659048106'
 
 /**
- * What the map falls back to while the pin is empty. Searching by name is
+ * The junction that directions should START from.
+ *
+ * WHY THIS EXISTS: a route that begins at the customer's own location will
+ * follow whichever road Google thinks is shortest, and that road may not be one
+ * you want a customer to drive. Fixing the origin forces every arrival along the
+ * route you choose, from the direction you choose.
+ *
+ * Fill this in with the coordinates of the junction the house wants people to
+ * approach from, in the same "lat,lng" form. The customer first drives to that
+ * junction themselves, then taps the button and follows the route in.
+ *
+ * Left empty, directions behave normally and start from wherever the customer is.
+ */
+export const STUDIO_APPROACH_FROM = ''
+
+/**
+ * How that junction is named on the page, for example "the Okigwe Road
+ * junction". Shown next to the directions button so the instruction reads as a
+ * sentence rather than as a pair of numbers.
+ */
+export const STUDIO_APPROACH_LABEL = ''
+
+/**
+ * What the map falls back to if STUDIO_PIN is ever cleared. Searching by name is
  * weaker than a pin, but it is better than sending a customer nowhere.
  */
 export const STUDIO_MAP_QUERY = 'Avid Woman Vogue, Owerri, Imo State, Nigeria'
@@ -63,3 +92,37 @@ export function studioCoords(): { latitude: string; longitude: string } {
   if (lat && lng) return { latitude: lat, longitude: lng }
   return FALLBACK_COORDS
 }
+
+/**
+ * The Google Maps directions link.
+ *
+ * With STUDIO_APPROACH_FROM set, the origin is pinned to that junction, so the
+ * route is the same for every customer regardless of which side of town they
+ * started from. That is the whole point: it takes the choice of road away from
+ * Google and gives it to the house.
+ *
+ * With it empty, the origin is left out and Maps routes from wherever the
+ * customer is.
+ */
+export function studioDirectionsUrl(): string {
+  const params = new URLSearchParams({
+    api: '1',
+    destination: mapTarget(),
+    travelmode: 'driving',
+  })
+
+  if (STUDIO_APPROACH_FROM) {
+    params.set('origin', STUDIO_APPROACH_FROM)
+  }
+
+  return `https://www.google.com/maps/dir/?${params.toString()}`
+}
+
+/**
+ * Whether the house has set an approach junction. The page uses this to decide
+ * whether to mention it, so the instruction never renders half-written.
+ */
+export function hasApproachRoute(): boolean {
+  return Boolean(STUDIO_APPROACH_FROM && STUDIO_APPROACH_LABEL)
+}
+

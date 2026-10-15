@@ -5372,6 +5372,17 @@ a.gold-button {
   line-height: 1.5;
 }
 
+/* The routing instruction. Deliberately plain: it is a sentence of help, not a
+   slogan, and it never mentions road conditions. */
+.contact-approach {
+  margin-top: 10px;
+  color: var(--gold);
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+
 .contact-list {
   display: grid;
   gap: 0;

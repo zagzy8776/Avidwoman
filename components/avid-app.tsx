@@ -18,7 +18,13 @@ import {
 } from "@/lib/data/types";
 import { requestFitting } from "@/app/actions";
 import { money } from "@/lib/format";
-import { mapTarget, STUDIO_LANDMARK } from "@/lib/studio-location";
+import {
+  hasApproachRoute,
+  mapTarget,
+  STUDIO_APPROACH_LABEL,
+  STUDIO_LANDMARK,
+  studioDirectionsUrl,
+} from "@/lib/studio-location";
 import ParticleLogo from "./particle-logo";
 import StudioLighting from "./studio-lighting";
 
@@ -55,10 +61,11 @@ const HOUSE = {
   landmark: STUDIO_LANDMARK,
   /**
    * Opens Google Maps with the studio as the destination, in driving mode.
-   * An exact pin routes to the pin; the name search is only a fallback.
+   * When the house has set an approach junction, the route starts there, so
+   * every customer arrives the same way.
    */
   get directions() {
-    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapTarget())}&travelmode=driving`;
+    return studioDirectionsUrl();
   },
   /** The studio pin on its own, for the embedded map panel. */
   get mapEmbed() {
@@ -2479,6 +2486,12 @@ export default function App({
                 {HOUSE.landmark && (
                   <p className="fitting-studio-landmark">{HOUSE.landmark}</p>
                 )}
+                {hasApproachRoute() && (
+                  <p className="contact-approach">
+                    By car, the route starts from {STUDIO_APPROACH_LABEL} and keeps you on the
+                    tarred road the whole way in.
+                  </p>
+                )}
                 <div className="fitting-studio-actions">
                   <a className="gold-button" href={HOUSE.directions} target="_blank" rel="noopener noreferrer">
                     Get directions <span>↗</span>
@@ -2540,6 +2553,12 @@ export default function App({
                   </a>
                 </div>
                 {HOUSE.landmark && <p className="contact-landmark">{HOUSE.landmark}</p>}
+                {hasApproachRoute() && (
+                  <p className="contact-approach">
+                    By car, the route starts from {STUDIO_APPROACH_LABEL} and keeps you on the
+                    tarred road the whole way in.
+                  </p>
+                )}
               </div>
 
               <div className="contact-block">
