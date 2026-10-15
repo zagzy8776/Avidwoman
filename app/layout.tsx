@@ -192,10 +192,13 @@ export async function generateMetadata(): Promise<Metadata> {
   },
   icons: {
     icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.png', type: 'image/png', sizes: '32x32' },
       { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/avid-woman-vogue-logo.png' },
     ],
-    apple: '/avid-woman-vogue-logo.png',
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
   }
 }
