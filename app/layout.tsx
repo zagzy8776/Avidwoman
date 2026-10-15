@@ -192,18 +192,36 @@ export async function generateMetadata(): Promise<Metadata> {
   },
   icons: {
     icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/avid-woman-vogue-logo.png', type: 'image/png' },
+      { url: '/favicon.svg', type: 'image/svg+xml', sizes: 'any' },
+      { url: '/avid-woman-vogue-logo.png', type: 'image/png', sizes: '512x512' },
     ],
-    apple: '/avid-woman-vogue-logo.png',
+    apple: [
+      { url: '/avid-woman-vogue-logo.png', sizes: '180x180', type: 'image/png' },
+    ],
     shortcut: '/favicon.svg',
+    other: [
+      { rel: 'mask-icon', url: '/favicon.svg', color: '#D4AF37' },
+    ],
+  },
+  applicationName: 'AVID WOMAN VOGUE',
+  appleWebApp: {
+    title: 'AVID WOMAN VOGUE',
+    statusBarStyle: 'black-translucent',
+    capable: true,
+  },
+  other: {
+    'msapplication-TileColor': '#000000',
+    'msapplication-TileImage': '/avid-woman-vogue-logo.png',
   },
   }
 }
 
 export const viewport: Viewport = {
   colorScheme: 'dark',
-  themeColor: '#000000',
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+    { media: '(prefers-color-scheme: light)', color: '#0a0a0a' },
+  ],
 }
 
 export default async function RootLayout({
