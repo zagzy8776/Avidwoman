@@ -21,7 +21,7 @@ import { money } from "@/lib/format";
 import {
   hasApproachRoute,
   mapTarget,
-  STUDIO_APPROACH_LABEL,
+  STUDIO_APPROACH,
   STUDIO_LANDMARK,
   studioDirectionsUrl,
 } from "@/lib/studio-location";
@@ -2487,10 +2487,13 @@ export default function App({
                   <p className="fitting-studio-landmark">{HOUSE.landmark}</p>
                 )}
                 {hasApproachRoute() && (
-                  <p className="contact-approach">
-                    By car, the route starts from {STUDIO_APPROACH_LABEL} and keeps you on the
-                    tarred road the whole way in.
-                  </p>
+                  <ol className="contact-route">
+                    {STUDIO_APPROACH.map((step, idx) => (
+                      <li key={idx}>
+                        {step.label}
+                      </li>
+                    ))}
+                  </ol>
                 )}
                 <div className="fitting-studio-actions">
                   <a className="gold-button" href={HOUSE.directions} target="_blank" rel="noopener noreferrer">
@@ -2554,10 +2557,13 @@ export default function App({
                 </div>
                 {HOUSE.landmark && <p className="contact-landmark">{HOUSE.landmark}</p>}
                 {hasApproachRoute() && (
-                  <p className="contact-approach">
-                    By car, the route starts from {STUDIO_APPROACH_LABEL} and keeps you on the
-                    tarred road the whole way in.
-                  </p>
+                  <ol className="contact-route">
+                    {STUDIO_APPROACH.map((step, idx) => (
+                      <li key={idx}>
+                        {step.label}
+                      </li>
+                    ))}
+                  </ol>
                 )}
               </div>
 

@@ -5372,15 +5372,19 @@ a.gold-button {
   line-height: 1.5;
 }
 
-/* The routing instruction. Deliberately plain: it is a sentence of help, not a
-   slogan, and it never mentions road conditions. */
-.contact-approach {
+/* Step-by-step driving instructions, deliberately plain: it is help, not a   slogan, and it never mentions road conditions. */
+.contact-route {
   margin-top: 10px;
+  padding-left: 20px;
   color: var(--gold);
   font-family: var(--serif);
   font-size: 15px;
-  line-height: 1.5;
+  line-height: 1.6;
   letter-spacing: 0.02em;
+}
+
+.contact-route li {
+  margin-bottom: 8px;
 }
 
 .contact-list {

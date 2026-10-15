@@ -35,27 +35,61 @@
 export const STUDIO_PIN = '5.538912528651021,7.057267659048106'
 
 /**
- * The junction that directions should START from.
- *
- * WHY THIS EXISTS: a route that begins at the customer's own location will
- * follow whichever road Google thinks is shortest, and that road may not be one
- * you want a customer to drive. Fixing the origin forces every arrival along the
- * route you choose, from the direction you choose.
- *
- * Fill this in with the coordinates of the junction the house wants people to
- * approach from, in the same "lat,lng" form. The customer first drives to that
- * junction themselves, then taps the button and follows the route in.
- *
- * Left empty, directions behave normally and start from wherever the customer is.
+ * One stop on the guided approach.
  */
-export const STUDIO_APPROACH_FROM = ''
+export type ApproachStep = {
+  /** "lat,lng", exactly as the house drew it. */
+  coords: string
+  /** How it is described to the customer. Plain words, no coordinates shown. */
+  label: string
+}
 
 /**
- * How that junction is named on the page, for example "the Okigwe Road
- * junction". Shown next to the directions button so the instruction reads as a
- * sentence rather than as a pair of numbers.
+ * The route the house wants customers to drive, drawn by hand, in order.
+ *
+ * WHY A LOOP AND NOT A SINGLE POINT: the obvious route to the studio crosses a
+ * stretch of road where customers meet standing water. Fixing only the start
+ * point would not have helped, because Google still chooses the last mile, and it
+ * chooses it for being short rather than for being sensible.
+ *
+ * So every turn is pinned. Google Maps directions accepts up to nine waypoints,
+ * and a waypoint must be passed through rather than merely passed near. That
+ * takes the decision of which road to drive away from Google and gives it to the
+ * house. The result is roughly 10 km, where a straight line would be far less,
+ * and that is the point: it goes the long way round on purpose.
+ *
+ * GEOGRAPHY, for anyone reading this later: the stops run through Ubomiri
+ * (Owerri North and Mbaitoli), then Akabo, then into Mbieri, all in Imo State.
+ * The roads there carry no name in OpenStreetMap, which is why the labels use
+ * landmarks and instructions instead of street names.
+ *
+ * The customer does not drive to stop one and then ask for directions. The whole
+ * sequence IS the directions: one tap opens Maps with all of it loaded.
+ *
+ * Leave the array empty and directions revert to normal behaviour, starting from
+ * wherever the customer happens to be.
  */
-export const STUDIO_APPROACH_LABEL = ''
+export const STUDIO_APPROACH: ApproachStep[] = [
+  { coords: '5.521370507008352, 7.050358553910494', label: 'Start here' },
+  {
+    coords: '5.5271003248673205, 7.045823555237026',
+    label: 'Follow this road up through Ubomiri',
+  },
+  {
+    coords: '5.534487240176959, 7.040736933067511',
+    label: 'Where the road ends, turn towards St Benignus',
+  },
+  { coords: '5.541514691986214, 7.0440960889744115', label: 'Pass St Benignus' },
+  { coords: '5.541471773131828, 7.049018334247288', label: 'Keep going' },
+  {
+    coords: '5.541852601659365, 7.054081122465442',
+    label: 'At this junction turn right for Millennium Hotel',
+  },
+  {
+    coords: '5.53744726596239, 7.058153663431946',
+    label: 'Stop here and call the studio',
+  },
+]
 
 /**
  * What the map falls back to if STUDIO_PIN is ever cleared. Searching by name is
@@ -96,33 +130,48 @@ export function studioCoords(): { latitude: string; longitude: string } {
 /**
  * The Google Maps directions link.
  *
- * With STUDIO_APPROACH_FROM set, the origin is pinned to that junction, so the
- * route is the same for every customer regardless of which side of town they
- * started from. That is the whole point: it takes the choice of road away from
- * Google and gives it to the house.
+ * With STUDIO_APPROACH drawn, the first stop becomes the origin, the last becomes
+ * the destination, and everything between is passed to Maps as waypoints. Maps
+ * must route through each one in order, which is what makes the long way the way
+ * every customer goes.
  *
- * With it empty, the origin is left out and Maps routes from wherever the
- * customer is.
+ * Google limits a directions URL to nine waypoints; seven stops leaves room for
+ * two more before that needs revisiting.
+ *
+ * With the array empty, the origin is left out entirely and Maps routes from
+ * wherever the customer is.
  */
 export function studioDirectionsUrl(): string {
+  const guided = STUDIO_APPROACH.length >= 2
+
   const params = new URLSearchParams({
     api: '1',
-    destination: mapTarget(),
+    destination: guided ? STUDIO_APPROACH[STUDIO_APPROACH.length - 1].coords : mapTarget(),
     travelmode: 'driving',
   })
 
-  if (STUDIO_APPROACH_FROM) {
-    params.set('origin', STUDIO_APPROACH_FROM)
+  if (guided) {
+    const [, ...middle] = STUDIO_APPROACH
+    params.set('origin', STUDIO_APPROACH[0].coords)
+    if (middle.length > 1) {
+      params.set(
+        'waypoints',
+        middle
+          .slice(0, -1)
+          .map((step) => step.coords)
+          .join('|'),
+      )
+    }
   }
 
   return `https://www.google.com/maps/dir/?${params.toString()}`
 }
 
 /**
- * Whether the house has set an approach junction. The page uses this to decide
- * whether to mention it, so the instruction never renders half-written.
+ * Whether the house has drawn a guided route. The page uses this to decide
+ * whether to show the route steps, so the list never renders half-written.
  */
 export function hasApproachRoute(): boolean {
-  return Boolean(STUDIO_APPROACH_FROM && STUDIO_APPROACH_LABEL)
+  return STUDIO_APPROACH.length >= 2
 }
 
